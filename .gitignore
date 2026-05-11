@@ -427,3 +427,54 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.DotSettings.user
+_ReSharper.Caches/
+_ReSharper.*/
+
+# MAUI (mobile, V1.1+)
+*.apk
+*.aab
+*.ipa
+*.xcarchive
+
+# .NET Aspire
+.aspire/
+
+# Local development secrets
+secrets/
+*.local.json
+appsettings.Local.json
+appsettings.*.Local.json
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+[Tt]est[Rr]esults/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node (for Tailwind v4 tooling)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Playwright
+playwright-report/
+test-results/
+.playwright/
+
+# Bicep
+*.bicepparam.user
+
+# AI assistant local config (only ignore user-local files; keep CLAUDE.md tracked)
+.claude/settings.local.json

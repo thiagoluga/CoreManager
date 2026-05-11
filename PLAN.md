@@ -125,12 +125,12 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.1 Setup do Repositório
 
-- [ ] (S) Criar repo no GitHub (privado inicialmente)
-- [ ] (S) `.gitignore` para .NET + Visual Studio + Rider
-- [ ] (S) `.editorconfig` configurado para Visual Studio + StyleCop
-- [ ] (S) Initial `README.md`
-- [ ] (S) Copiar `CLAUDE.md` e `PLAN.md` para raiz do repo
-- [ ] (S) Branch protection rules em `main` (require PR, require CI)
+- [x] (S) Criar repo no GitHub (privado inicialmente)
+- [x] (S) `.gitignore` para .NET + Visual Studio + Rider
+- [x] (S) `.editorconfig` configurado para Visual Studio + StyleCop
+- [x] (S) Initial `README.md`
+- [x] (S) Copiar `CLAUDE.md` e `PLAN.md` para raiz do repo
+- [ ] (S) Branch protection rules em `main` (require PR, require CI) — pendente (ação no GitHub)
 
 ### 5.2 Solution e Projetos Base
 
