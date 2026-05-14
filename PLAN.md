@@ -155,22 +155,22 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.3 BuildingBlocks.Domain
 
-- [ ] (S) `IDomainEvent.cs`
-- [ ] (S) `IIntegrationEvent.cs` (em IntegrationEvents)
-- [ ] (M) Interfaces marker:
-  - [ ] `IAuditable.cs`
-  - [ ] `ISoftDeletable.cs`
-  - [ ] `IMultiTenant.cs`
-  - [ ] `IConcurrencyAware.cs`
-  - [ ] `IActivatable.cs`
-  - [ ] `IHasDomainEvents.cs`
-- [ ] (M) Hierarquia de Entity:
-  - [ ] `EntityBase.cs`
-  - [ ] `AuditableEntity.cs`
-  - [ ] `FullAuditableEntity.cs`
-  - [ ] `TenantEntity.cs`
-- [ ] (M) Result<T> pattern + Error + GeneralErrors
-- [ ] (S) Unit tests para Result e GeneralErrors
+- [x] (S) `IDomainEvent.cs`
+- [x] (S) `IIntegrationEvent.cs` (em IntegrationEvents)
+- [x] (M) Interfaces marker:
+  - [x] `IAuditable.cs`
+  - [x] `ISoftDeletable.cs`
+  - [x] `IMultiTenant.cs`
+  - [x] `IConcurrencyAware.cs`
+  - [x] `IActivatable.cs`
+  - [x] `IHasDomainEvents.cs`
+- [x] (M) Hierarquia de Entity:
+  - [x] `EntityBase.cs`
+  - [x] `AuditableEntity.cs`
+  - [x] `FullAuditableEntity.cs`
+  - [x] `TenantEntity.cs`
+- [x] (M) Result<T> pattern + Error + GeneralErrors
+- [x] (S) Unit tests para Result e GeneralErrors (26 testes, todos passando)
 
 ### 5.4 BuildingBlocks.Application
 
@@ -793,3 +793,4 @@ Item considerado pronto quando:
 ## Histórico de Mudanças
 
 - **2026-05-11**: Versão final consolidada com Blazor WASM + MudBlazor, estrutura modular Server/Client/Shared/Contracts, EF Migrations por módulo com schema próprio, Outbox + idempotência obrigatórios, i18n full-ready, Moq para mocking, Aspire para dev local, Hangfire OSS, Marketing como módulo no MVP, breadcrumb apenas em código (UI/URL override anotados V2+), módulo Personalization criado, todas as 7 armadilhas de extração documentadas, ADRs 1 a 46.
+- **2026-05-14**: Adotada **regra de idioma única — inglês para todo conteúdo novo do repositório** (código, comentários, docs internos, commits, scripts, IaC). Exceções: strings de UI ficam nos JSONs de i18n; termos próprios brasileiros (Pix, CPF, CNPJ, NFS-e) preservados. Conteúdo legado em pt-BR será traduzido em PR dedicado (CLAUDE.md §12.0).

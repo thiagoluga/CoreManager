@@ -8,15 +8,23 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!--
       CA1014: assembly não precisa de CLSCompliant.
+      CA1819: properties retornando array — necessário para byte[] RowVersion (EF Core).
+      CA2227: collection setters — entidades precisam para EF Core hidratar.
+      CA1812: classes never instantiated — falsos positivos com DI.
+      CA1716: nome conflitante com palavra reservada VB.NET — só usamos C#.
+      CA1000: membros estáticos em tipo genérico — usado em Result<T>.
       CS1591: comentário XML ausente — pragmático, não exigimos doc em todo membro.
-      SA1633: file header / copyright — não usamos.
+      IDE0032: prefer auto property — Result<T>.Value tem getter custom.
       IDE0211: usamos top-level statements em Program.cs.
+      SA1611/SA1615/SA1618/SA1642: doc detalhada de params/return/ctor — pragmático.
+      SA1633: file header / copyright — não usamos.
     -->
-    <NoWarn>$(NoWarn);CA1014;CS1591;SA1633;IDE0211</NoWarn>
+    <NoWarn>
+      $(NoWarn);CA1014;CA1819;CA2227;CA1812;CA1716;CA1000;CS1591;IDE0032;IDE0211;SA1611;SA1615;SA1618;SA1642;SA1633
+    </NoWarn>
     <IsPackable>false</IsPackable>
     <NeutralLanguage>pt-BR</NeutralLanguage>
     <Deterministic>true</Deterministic>

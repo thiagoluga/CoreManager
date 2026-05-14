@@ -1225,6 +1225,34 @@ Templates de notificação, custom field labels, nomes de planos com tradução 
 
 ## 12. Code Conventions
 
+### 12.0 Language Policy (REGRA GLOBAL DO REPO)
+
+**Todo conteúdo do repositório é em inglês.** Sem exceções abaixo:
+
+- Código C#: nomes de tipos, métodos, parâmetros, variáveis — inglês
+- Comentários em código (`//`, `/* */`, XML doc) — inglês
+- Mensagens de log, exception messages, descrições de erro técnicas — inglês
+- Nomes de arquivos e pastas — inglês
+- Commit messages, branch names, PR titles/descriptions — inglês
+- Documentação interna: `README.md`, `CLAUDE.md`, `PLAN.md`, ADRs em `docs/`, runbooks — inglês
+- Scripts (`*.ps1`, `*.sh`) e seus comentários — inglês
+- Bicep e templates de IaC: comentários e variáveis — inglês
+- `appsettings.json` chaves de configuração — inglês
+
+**Exceções (intencionais):**
+
+- **Strings de UI voltadas ao usuário final**: ficam nos JSONs de i18n
+  (`Resources/*.pt-BR.json` em pt-BR, `*.en-US.json` em inglês, etc.).
+  O *código* que consome via `IStringLocalizer<T>["chave"]` usa chave em inglês.
+- **Termos próprios brasileiros**: `Pix`, `CPF`, `CNPJ`, `NFS-e`, `Asaas`, `wa.me`,
+  nomes de gateways e instituições — mantidos como nomes próprios.
+- **Mensagens visíveis ao tenant** que vêm do banco (templates de notificação,
+  labels customizados) — seguem a configuração do tenant, fora do código.
+
+> **Histórico**: este repositório nasceu com docs e código em português.
+> A regra entra em vigor agora; conteúdo legado em pt-BR será traduzido
+> em PR dedicado. Novo código já entra em inglês.
+
 ### 12.1 Naming
 
 ```
@@ -1443,6 +1471,15 @@ Comando: `dotnet run --project src/AppHost/Luga.AppHost`
 ---
 
 ## 21. Rules for Claude
+
+### Idioma do repositório (REGRA PRIMÁRIA)
+- **TODO conteúdo novo no repositório é em inglês** (detalhes em §12.0)
+- Código, comentários, XML doc, exception messages, logs, commit messages,
+  branch names, docs em `docs/`, scripts, IaC — **inglês**
+- Exceções: strings de UI (vão para JSONs de i18n) e termos próprios brasileiros
+  (Pix, CPF, CNPJ, NFS-e, Asaas)
+- Conversa com o usuário no chat pode seguir o idioma dele, mas qualquer
+  artefato escrito ao repositório é em inglês
 
 ### Decisões e mudanças
 - **NUNCA** introduzir nova lib NuGet/npm sem perguntar primeiro
