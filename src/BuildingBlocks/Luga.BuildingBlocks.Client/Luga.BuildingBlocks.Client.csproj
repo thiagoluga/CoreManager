@@ -28,9 +28,12 @@
 
   <!-- Embed JSON resource files into the assembly so LugaJsonStringLocalizer
        can read them via Assembly.GetManifestResourceStream — works in both
-       Blazor WebAssembly and server hosts (no filesystem dependency). -->
+       Blazor WebAssembly and server hosts (no filesystem dependency).
+       The Razor SDK auto-registers everything under the project as <Content>
+       (static web asset); we have to Remove first so EmbeddedResource wins. -->
   <ItemGroup>
-    <EmbeddedResource Include="Resources\**\*.json" />
+    <Content Remove="Resources\**\*.json" />
+    <EmbeddedResource Include="Resources\**\*.json" WithCulture="false" />
   </ItemGroup>
 
 </Project>

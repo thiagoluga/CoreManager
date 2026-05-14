@@ -34,9 +34,13 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
-  <!-- Embedded JSON resources for host-owned pages (Login etc.). -->
+  <!-- Embedded JSON resources for host-owned pages (Login etc.).
+       The Razor SDK auto-registers files under the project as <Content>; we
+       Remove first so the JSON ends up embedded in the DLL where
+       LugaJsonStringLocalizer can read it. -->
   <ItemGroup>
-    <EmbeddedResource Include="Resources\**\*.json" />
+    <Content Remove="Resources\**\*.json" />
+    <EmbeddedResource Include="Resources\**\*.json" WithCulture="false" />
   </ItemGroup>
 
 </Project>
