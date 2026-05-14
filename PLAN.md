@@ -476,14 +476,32 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 - [ ] (M) API controllers / Client admin UI — **deferred to §6.5** (admin pages)
 - [ ] (M) Signup flow — **deferred**: needs §6.3 (real billing gateway) before tenant signup can actually charge a card
 
-### 6.3 Core: Cobrança Própria (Luga cobrando seus tenants)
+### 6.3 Core: Cobrança Própria (Luga cobrando seus tenants) — DEFERRED
 
-- [ ] (S) **Decidir gateway**: Stripe / Asaas / Mercado Pago
-- [ ] (M) Integração com gateway
-- [ ] (M) Webhook receiver para pagamento confirmado
-- [ ] (M) Atualização de `TenantSubscription.Status`
-- [ ] (M) Handling inadimplência (suspende tenant após X dias)
-- [ ] (S) Client: histórico de faturas do tenant
+Whole section is deferred to V1.1. The MVP demo flow is:
+
+1. Tenant signs up via Marketing → lands authenticated at `/dashboard` with a
+   `TenantSubscription` row in `Pending` status (no billing run yet).
+2. Luga operator manually flips the row to `Active` after receiving payment
+   out-of-band (boleto, Pix, wire) until the gateway lands.
+
+Reasons for deferral:
+
+- TBD on gateway (Stripe / Asaas / Mercado Pago) — explicit TBD in §3 of this PLAN.
+- Real billing requires production-grade webhook handling + idempotency that we
+  haven't proven in a smaller surface yet.
+- The customer-facing Payments module (§6.7) already exercises Asaas integration
+  for tenant↔customer billing; bootstrapping a second gateway just for Luga↔tenant
+  doubles the surface for no MVP value.
+
+When V1.1 reopens this section the pieces needed are:
+
+- [ ] Decide gateway (revisit TBD in §3)
+- [ ] HttpClient + Polly integration in `BuildingBlocks.Infrastructure.Auth`
+- [ ] `BillingWebhooksController` (Core) processing `payment.succeeded` events
+- [ ] `TenantSubscription.Status` transitions via `MarkAsActive` / `MarkAsPastDue` / `Suspend` domain methods
+- [ ] Dunning policy job in Hangfire (3 days past due → suspend, 30 days → cancel)
+- [ ] Client: tenant-facing invoice history page under `/billing`
 
 ### 6.4 Módulo Personalization (gestão de menu + RBAC)
 
