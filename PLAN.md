@@ -412,10 +412,10 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.14 Scripts auxiliares
 
-- [ ] (S) `scripts/Add-Migration.ps1`
-- [ ] (S) `scripts/Update-Database.ps1`
-- [ ] (S) `scripts/Generate-MigrationScript.ps1`
-- [ ] (S) `scripts/Add-Module.ps1` (template para criar nova estrutura de módulo)
+- [x] (S) `scripts/Add-Migration.ps1` — wraps `dotnet ef migrations add` with the per-module conventions
+- [x] (S) `scripts/Update-Database.ps1` — applies migrations locally (warns it must never target staging/prod)
+- [x] (S) `scripts/Generate-MigrationScript.ps1` — emits idempotent SQL into `artifacts/migrations/<module>.sql`
+- [x] (S) `scripts/Add-Module.ps1` — scaffolds the four-project layout for a new module and registers them in the .slnx
 
 ### 5.15 Critério de pronto da Fase 0
 
