@@ -2,6 +2,8 @@ using System.Reflection;
 
 using FluentValidation;
 
+using Luga.BuildingBlocks.Application.Abstractions;
+using Luga.BuildingBlocks.Infrastructure.Persistence;
 using Luga.BuildingBlocks.Server.Modules;
 using Luga.Modules.Core.Contracts;
 using Luga.Modules.Core.Server.Application.Repositories;
@@ -52,6 +54,15 @@ public static class CoreServerModule
 
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
         });
+
+        // Bind the cross-module abstractions to CoreDbContext.
+        //   - LugaDbContextBase: consumed by `IdempotencyStore` (core.idempotency_keys
+        //     is the single, platform-wide table) and by `ProcessedEventStore`.
+        //   - IUnitOfWork: consumed by Core's MediatR handlers (RegisterTenantCommandHandler).
+        // Other modules' handlers inject their own `XDbContext` directly to commit work
+        // against their own schema. CLAUDE.md §7.8 / §16.
+        services.AddScoped<LugaDbContextBase>(sp => sp.GetRequiredService<CoreDbContext>());
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CoreDbContext>());
 
         // FluentValidation discovery for Core validators (host registers MediatR globally).
         services.AddValidatorsFromAssembly(Assembly);
