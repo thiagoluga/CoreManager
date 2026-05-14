@@ -42,6 +42,12 @@ public sealed class CoreDbContext : LugaDbContextBase
     /// <summary>Tenant user.</summary>
     public DbSet<TenantUser> TenantUsers => Set<TenantUser>();
 
+    /// <summary>Subscription plans (the Luga catalog).</summary>
+    public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
+
+    /// <summary>Tenant subscriptions to plans.</summary>
+    public DbSet<TenantSubscription> TenantSubscriptions => Set<TenantSubscription>();
+
     /// <summary>Outbox messages for Core.</summary>
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 

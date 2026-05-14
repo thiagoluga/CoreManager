@@ -462,25 +462,19 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 6.2 Core: Sistema de Pricing
 
-- [ ] (M) Domain entities:
-  - [ ] `SubscriptionPlan` (FullAuditableEntity)
-  - [ ] `PlanItem`
-  - [ ] `ModuleTier`
-  - [ ] `TenantSubscription` (TenantEntity)
-  - [ ] Enums: BillingCycle, SubscriptionStatus
-- [ ] (M) Application features:
-  - [ ] `CreatePlanCommand` (admin only)
-  - [ ] `UpdatePlanCommand`
-  - [ ] `ListPlansQuery` (público)
-  - [ ] `SubscribeTenantToPlanCommand`
-  - [ ] `GetCurrentSubscriptionQuery`
-  - [ ] `CheckModuleAccessQuery`
-- [ ] (M) Infrastructure:
-  - [ ] Repositories
-  - [ ] CoreModuleInitializer popula planos iniciais (Free, Starter, Pro, Business)
-- [ ] (M) API Controllers
-- [ ] (M) Client: UI admin de gestão de catálogo (CRUD plans/tiers/bundles)
-- [ ] (M) Client: signup fluxo de escolher plano
+- [x] (M) Domain entities:
+  - [x] `SubscriptionPlan` (`FullAuditableEntity`) with `Code`, `Name`, `Description`, `MonthlyPrice`, `AnnualPrice`, `DefaultBillingCycle`, `IncludedModules` (comma-joined value converter), `IsPublic`, `IsHighlighted`, `DisplayOrder`
+  - [x] `TenantSubscription` (`TenantEntity`) with snapshot fields for plan code/name/billing and `Status` lifecycle
+  - [x] Enums: `BillingCycle`, `SubscriptionStatus`
+  - [ ] `PlanItem` / `ModuleTier` — **deferred**: the MVP keeps the catalog flat (one plan = one tier); reintroduce when bundles ship in V1.1
+- [ ] (M) Application features — **deferred** (admin CRUD comes with the admin UI in §6.5; subscribe flow waits for a real billing gateway in §6.3). The read service (`ISubscriptionPlansService`) is already in place.
+- [x] (M) Infrastructure:
+  - [x] EF configurations for `SubscriptionPlan` + `TenantSubscription`
+  - [x] `CoreDbContext` exposes `SubscriptionPlans` + `TenantSubscriptions` DbSets
+  - [x] `SubscriptionPlansService` (DB-backed) replaces the hardcoded stub
+  - [x] `CoreModuleInitializer` v2 seeds Starter / Pro / Business plans
+- [ ] (M) API controllers / Client admin UI — **deferred to §6.5** (admin pages)
+- [ ] (M) Signup flow — **deferred**: needs §6.3 (real billing gateway) before tenant signup can actually charge a card
 
 ### 6.3 Core: Cobrança Própria (Luga cobrando seus tenants)
 

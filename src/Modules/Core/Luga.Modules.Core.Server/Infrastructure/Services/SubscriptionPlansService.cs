@@ -1,63 +1,65 @@
 using Luga.Modules.Core.Contracts;
 using Luga.Modules.Core.Contracts.DTOs;
+using Luga.Modules.Core.Server.Domain.Entities;
+using Luga.Modules.Core.Server.Infrastructure.Persistence;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Luga.Modules.Core.Server.Infrastructure.Services;
 
 /// <summary>
-/// MVP stub for <see cref="ISubscriptionPlansService"/>. Returns a hardcoded
-/// public catalogue while §6.2 wires the real <c>SubscriptionPlan</c> entity,
-/// repository and admin CRUD. Swap the stub once that lands.
+/// EF-backed implementation of <see cref="ISubscriptionPlansService"/>. Seed
+/// data is loaded by <c>CoreModuleInitializer</c>.
 /// </summary>
-public sealed class SubscriptionPlansService : ISubscriptionPlansService
+public sealed class SubscriptionPlansService(CoreDbContext context) : ISubscriptionPlansService
 {
-    private static readonly IReadOnlyList<PlanContractDto> Catalog =
-    [
-        new(
-            Id: new Guid("00000000-0000-0000-0000-000000000001"),
-            Code: "starter",
-            Name: "Starter",
-            Description: "Para começar: até 100 customers, fluxo manual de cobrança.",
-            MonthlyPrice: 79m,
-            AnnualPrice: 790m,
-            BillingCycle: "Mensal",
-            IncludedModules: ["core", "customers", "payments"],
-            IsHighlighted: false,
-            IsPublic: true),
-        new(
-            Id: new Guid("00000000-0000-0000-0000-000000000002"),
-            Code: "pro",
-            Name: "Pro",
-            Description: "Crescimento: até 500 customers, integração com Asaas, notificações automáticas.",
-            MonthlyPrice: 199m,
-            AnnualPrice: 1990m,
-            BillingCycle: "Mensal",
-            IncludedModules: ["core", "customers", "payments", "personalization"],
-            IsHighlighted: true,
-            IsPublic: true),
-        new(
-            Id: new Guid("00000000-0000-0000-0000-000000000003"),
-            Code: "business",
-            Name: "Business",
-            Description: "Operação madura: customers ilimitados, multi-usuário, automações avançadas.",
-            MonthlyPrice: 399m,
-            AnnualPrice: 3990m,
-            BillingCycle: "Mensal",
-            IncludedModules: ["core", "customers", "payments", "personalization"],
-            IsHighlighted: false,
-            IsPublic: true),
-    ];
+    private readonly CoreDbContext _context = context;
 
-    public Task<IReadOnlyList<PlanContractDto>> GetPublicPlansAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult(Catalog);
+    public async Task<IReadOnlyList<PlanContractDto>> GetPublicPlansAsync(CancellationToken cancellationToken = default)
+    {
+        List<SubscriptionPlan> plans = await _context.SubscriptionPlans
+            .AsNoTracking()
+            .Where(p => p.IsPublic)
+            .OrderBy(p => p.DisplayOrder)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
 
-    public Task<PlanContractDto?> GetByIdAsync(Guid planId, CancellationToken cancellationToken = default) =>
-        Task.FromResult<PlanContractDto?>(Catalog.FirstOrDefault(p => p.Id == planId));
+        return [.. plans.Select(Map)];
+    }
 
-    public Task<IReadOnlyList<PlanContractDto>> GetByIdsAsync(IEnumerable<Guid> planIds, CancellationToken cancellationToken = default)
+    public async Task<PlanContractDto?> GetByIdAsync(Guid planId, CancellationToken cancellationToken = default)
+    {
+        SubscriptionPlan? plan = await _context.SubscriptionPlans
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == planId, cancellationToken)
+            .ConfigureAwait(false);
+
+        return plan is null ? null : Map(plan);
+    }
+
+    public async Task<IReadOnlyList<PlanContractDto>> GetByIdsAsync(IEnumerable<Guid> planIds, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(planIds);
-        HashSet<Guid> ids = [.. planIds];
-        IReadOnlyList<PlanContractDto> result = [.. Catalog.Where(p => ids.Contains(p.Id))];
-        return Task.FromResult(result);
+        Guid[] ids = [.. planIds];
+
+        List<SubscriptionPlan> plans = await _context.SubscriptionPlans
+            .AsNoTracking()
+            .Where(p => ids.Contains(p.Id))
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        return [.. plans.Select(Map)];
     }
+
+    private static PlanContractDto Map(SubscriptionPlan p) => new(
+        Id: p.Id,
+        Code: p.Code,
+        Name: p.Name,
+        Description: p.Description,
+        MonthlyPrice: p.MonthlyPrice,
+        AnnualPrice: p.AnnualPrice,
+        BillingCycle: p.DefaultBillingCycle.ToString(),
+        IncludedModules: [.. p.IncludedModules],
+        IsHighlighted: p.IsHighlighted,
+        IsPublic: p.IsPublic);
 }

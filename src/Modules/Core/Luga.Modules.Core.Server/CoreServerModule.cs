@@ -63,7 +63,7 @@ public static class CoreServerModule
         // Cross-module contracts
         services.AddScoped<ITenantsService, TenantsService>();
         services.AddScoped<IUsersService, UsersService>();
-        services.AddSingleton<ISubscriptionPlansService, SubscriptionPlansService>();
+        services.AddScoped<ISubscriptionPlansService, SubscriptionPlansService>();
 
         // Module initializer (versioned DML seeds — CLAUDE.md §7.11).
         services.AddSingleton<IModuleInitializer, CoreModuleInitializer>();
