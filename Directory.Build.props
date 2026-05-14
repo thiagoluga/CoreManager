@@ -16,6 +16,7 @@
       CA2227  — collection setters (EF Core needs them to hydrate entities).
       CA1812  — class never instantiated (false positives with DI).
       CA1716  — name conflicts with VB.NET keyword (C#-only codebase).
+      CA1711  — type name suffix (e.g. EventHandler) — intentional for domain types.
       CA1000  — static members on generic type (intentional in Result<T>).
       CA1848  — LoggerMessage delegates (high-perf logging optimization, may revisit later).
       CA1873  — potentially expensive argument evaluation in logging (tied to CA1848).
@@ -28,7 +29,7 @@
       SA1633  — file header / copyright not used.
     -->
     <NoWarn>
-      $(NoWarn);CA1014;CA1819;CA2227;CA1812;CA1716;CA1000;CA1848;CA1873;CS1591;IDE0032;IDE0046;IDE0211;SA1117;SA1611;SA1615;SA1618;SA1642;SA1633
+      $(NoWarn);CA1014;CA1819;CA2227;CA1812;CA1716;CA1711;CA1000;CA1848;CA1873;CS1591;IDE0032;IDE0046;IDE0211;SA1117;SA1611;SA1615;SA1618;SA1642;SA1633
     </NoWarn>
     <IsPackable>false</IsPackable>
     <NeutralLanguage>pt-BR</NeutralLanguage>

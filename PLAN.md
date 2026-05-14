@@ -190,53 +190,51 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.5 BuildingBlocks.Infrastructure
 
-- [ ] (M) `LugaDbContextBase.cs` (query filters globais, concurrency tokens)
-- [ ] (L) Interceptors:
-  - [ ] `AuditableEntityInterceptor`
-  - [ ] `TenantIdInterceptor`
-  - [ ] `SoftDeleteInterceptor`
-  - [ ] `ActivationTrackingInterceptor`
-  - [ ] `DomainEventToOutboxInterceptor`
-- [ ] (M) Outbox pattern:
-  - [ ] `OutboxMessage.cs`
-  - [ ] `OutboxMessageConfiguration.cs` (base)
-  - [ ] `ProcessedIntegrationEvent.cs`
-  - [ ] `ProcessedIntegrationEventConfiguration.cs`
-  - [ ] `IOutboxProcessor.cs`
-  - [ ] `OutboxProcessor.cs` (Hangfire job)
-- [ ] (M) Repository base:
-  - [ ] `Repository<T>.cs` implementação genérica
-  - [ ] `SpecificationEvaluator.cs` (Ardalis.Specification)
-- [ ] (M) Migrations infrastructure:
-  - [ ] `ModuleMigrationRunner.cs`
-  - [ ] `ModuleInitializerRunner.cs`
-  - [ ] `IModuleInitializer.cs` (em BuildingBlocks.Server)
-  - [ ] `InitializationContext.cs`
-  - [ ] `ModuleInitializationEntity.cs` (rastreia versões aplicadas)
-- [ ] (M) Tenancy:
-  - [ ] `TenantContext.cs`
-  - [ ] `TenantContextMiddleware.cs`
-  - [ ] `TenantClaimsExtractor.cs`
-- [ ] (M) Auth:
-  - [ ] `EntraExternalIdConfiguration.cs`
-  - [ ] `JwtBearerSetup.cs`
-  - [ ] `CurrentUserAccessor.cs`
-  - [ ] `AuthPropagationHandler.cs` (DelegatingHandler para cross-service futuro)
-- [ ] (M) Idempotency:
-  - [ ] `IdempotencyKey.cs` entity
-  - [ ] `IdempotencyStore.cs`
-  - [ ] `IdempotencyMiddleware.cs`
-- [ ] (S) Hangfire setup (`HangfireSetup.cs`, dashboard auth filter)
-- [ ] (M) Observability:
-  - [ ] `SerilogSetup.cs`
-  - [ ] `OpenTelemetrySetup.cs` (com correlation IDs)
-  - [ ] `HealthChecksSetup.cs`
-- [ ] (M) Events:
-  - [ ] `InProcessIntegrationEventBus.cs`
-  - [ ] `IProcessedEventStore.cs` + impl
-  - [ ] `DomainEventDispatcher.cs`
-  - [ ] `IIntegrationEventHandler<T>.cs`
-- [ ] (S) `PersistenceServiceCollectionExtensions.cs` (registra interceptors)
+- [x] (M) `LugaDbContextBase.cs` (global query filters for tenancy + soft-delete, rowversion concurrency tokens, `IUnitOfWork`)
+- [x] (L) Interceptors (registered scoped in `AddLugaPersistence`):
+  - [x] `AuditableEntityInterceptor`
+  - [x] `TenantIdInterceptor`
+  - [x] `SoftDeleteInterceptor`
+  - [x] `ActivationTrackingInterceptor`
+  - [x] `DomainEventToOutboxInterceptor`
+- [x] (M) Outbox pattern:
+  - [x] `OutboxMessage.cs` + `OutboxMessageConfiguration.cs`
+  - [x] `ProcessedIntegrationEvent.cs` + `ProcessedIntegrationEventConfiguration.cs`
+  - [x] `IOutboxProcessor.cs`
+  - [x] `OutboxProcessor<TContext>.cs` (generic; each module registers its own)
+- [x] (M) Repository base:
+  - [x] `Repository<T>.cs` (Ardalis.Specification + paging)
+  - [x] (skipped) `SpecificationEvaluator.cs` — using `Ardalis.Specification.EntityFrameworkCore.SpecificationEvaluator.Default` directly
+- [x] (M) Migrations infrastructure:
+  - [x] `ModuleMigrationRunner.cs` (Infrastructure)
+  - [x] `ModuleInitializerRunner.cs` (**moved to Server** — depends on `IModuleInitializer`)
+  - [x] `IModuleInitializer.cs` (Server)
+  - [x] `InitializationContext.cs` (Server)
+  - [x] `ModuleInitialization.cs` entity + config (`core.module_initializations`)
+- [x] (M) Tenancy:
+  - [x] `HttpTenantContext.cs` (Server — implements `ITenantContext` from claims)
+  - [x] `TenantContextMiddleware.cs` (Server — adds TenantId to log scope)
+  - [x] `TenantClaimsExtractor.cs` (Server — claim constants and helpers)
+- [x] (M) Auth:
+  - [x] `EntraExternalIdOptions.cs` (Server — config record)
+  - [x] `JwtBearerSetup.cs` (Server)
+  - [x] `CurrentUserAccessor.cs` (Server — implements `ICurrentUser` from claims)
+  - [x] `AuthPropagationHandler.cs` + `ITokenProvider.cs` (Infrastructure — `DelegatingHandler`)
+- [x] (M) Idempotency:
+  - [x] `IdempotencyKey.cs` entity + config (Infrastructure)
+  - [x] `IdempotencyStore.cs` (Infrastructure — implements `IIdempotencyStore`)
+  - [x] `IdempotencyMiddleware.cs` (Server — POST/PUT/PATCH/DELETE + buffered response capture)
+- [x] (S) `HangfireSetup.cs` (Server — SQL Server storage + dashboard auth policy)
+- [x] (M) Observability:
+  - [x] `SerilogSetup.cs` (Infrastructure)
+  - [x] `OpenTelemetrySetup.cs` (Infrastructure — AspNetCore + Http + Runtime instrumentation)
+  - [x] `HealthChecksSetup.cs` (Server — `/health/live`, `/health/ready`)
+- [x] (M) Events:
+  - [x] `InProcessIntegrationEventBus.cs` (Infrastructure)
+  - [x] `IProcessedEventStore.cs` (IntegrationEvents) + `ProcessedEventStore.cs` (Infrastructure)
+  - [x] `DomainEventDispatcher.cs` (Infrastructure — skips `IIntegrationEvent` already outboxed)
+  - [x] `IIntegrationEventHandler<T>.cs` (IntegrationEvents)
+- [x] (S) `PersistenceServiceCollectionExtensions.cs` (registers interceptors + cross-cutting infra)
 
 ### 5.6 BuildingBlocks.Client (Blazor)
 
