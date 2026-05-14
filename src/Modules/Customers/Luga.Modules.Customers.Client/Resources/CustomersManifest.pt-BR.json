@@ -1,0 +1,8 @@
+{
+  "manifest.customers.displayName": "Customers",
+  "manifest.customers.menu.list": "Lista de customers",
+  "manifest.customers.menu.new": "Novo customer",
+  "manifest.customers.breadcrumb.list": "Customers",
+  "manifest.customers.breadcrumb.new": "Novo",
+  "manifest.customers.breadcrumb.detail": "Detalhes"
+}

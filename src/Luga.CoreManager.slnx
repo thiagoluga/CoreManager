@@ -7,6 +7,12 @@
     <Project Path="Modules/Core/Luga.Modules.Core.Server/Luga.Modules.Core.Server.csproj" />
     <Project Path="Modules/Core/Luga.Modules.Core.Shared/Luga.Modules.Core.Shared.csproj" />
   </Folder>
+  <Folder Name="/Modules/Customers/">
+    <Project Path="Modules/Customers/Luga.Modules.Customers.Client/Luga.Modules.Customers.Client.csproj" />
+    <Project Path="Modules/Customers/Luga.Modules.Customers.Contracts/Luga.Modules.Customers.Contracts.csproj" />
+    <Project Path="Modules/Customers/Luga.Modules.Customers.Server/Luga.Modules.Customers.Server.csproj" />
+    <Project Path="Modules/Customers/Luga.Modules.Customers.Shared/Luga.Modules.Customers.Shared.csproj" />
+  </Folder>
   <Folder Name="/Modules/Marketing/">
     <Project Path="Modules/Marketing/Luga.Modules.Marketing.Client/Luga.Modules.Marketing.Client.csproj" />
     <Project Path="Modules/Marketing/Luga.Modules.Marketing.Contracts/Luga.Modules.Marketing.Contracts.csproj" />

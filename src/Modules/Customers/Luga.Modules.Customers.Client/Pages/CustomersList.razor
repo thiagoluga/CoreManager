@@ -1,0 +1,90 @@
+@page "/customers"
+@attribute [Authorize]
+@inherits LugaPageBase
+@inject ICustomersApi Api
+@inject NavigationManager Navigation
+@inject IStringLocalizer<CustomersList> L
+
+<PageBreadcrumb Localizer="@L" />
+
+<MudText Typo="Typo.h4" Class="mb-4">@L["pageTitle"]</MudText>
+
+<MudPaper Class="pa-4 mb-4" Elevation="1">
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="6">
+            <MudTextField @bind-Value="_search" Label="@L["search"]" Variant="Variant.Outlined"
+                          DebounceInterval="300" OnDebounceIntervalElapsed="Reload" Immediate="true"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+        </MudItem>
+        <MudItem xs="12" md="6" Class="d-flex align-end justify-end">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd"
+                       OnClick="@(() => Navigation.NavigateTo("/customers/new"))">
+                @L["new"]
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@if (_page is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else if (_page.Items.Count == 0)
+{
+    <MudAlert Severity="Severity.Info">@L["empty"]</MudAlert>
+}
+else
+{
+    <MudTable Items="_page.Items" Hover="true" Striped="true">
+        <HeaderContent>
+            <MudTh>@L["columnName"]</MudTh>
+            <MudTh>@L["columnEmail"]</MudTh>
+            <MudTh>@L["columnPhone"]</MudTh>
+            <MudTh>@L["columnStatus"]</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.DisplayName</MudTd>
+            <MudTd>@context.Email</MudTd>
+            <MudTd>@context.Phone</MudTd>
+            <MudTd>
+                <MudChip T="string" Color="@(context.IsActive ? Color.Success : Color.Default)" Size="Size.Small">
+                    @(context.IsActive ? L["statusActive"] : L["statusInactive"])
+                </MudChip>
+            </MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small"
+                               OnClick="@(() => Navigation.NavigateTo($"/customers/{context.Id}"))" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    <MudPagination Count="@_page.TotalPages" Selected="_pageNumber"
+                   SelectedChanged="OnPageChanged" Class="mt-4" />
+}
+
+@code {
+    private PagedCustomersResponse? _page;
+    private int _pageNumber = 1;
+    private string _search = string.Empty;
+
+    protected override async Task OnInitializedAsync() => await Reload();
+
+    private async Task Reload()
+    {
+        try
+        {
+            _page = await Api.ListAsync(_pageNumber, pageSize: 20, search: _search);
+        }
+        catch (Exception)
+        {
+            _page = null;
+        }
+    }
+
+    private async Task OnPageChanged(int newPage)
+    {
+        _pageNumber = newPage;
+        await Reload();
+    }
+}

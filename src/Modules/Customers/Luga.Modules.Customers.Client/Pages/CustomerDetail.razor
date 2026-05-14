@@ -1,0 +1,146 @@
+@page "/customers/{Id:guid}"
+@attribute [Authorize]
+@inherits LugaPageBase
+@inject ICustomersApi Api
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService Dialog
+@inject IStringLocalizer<CustomerDetail> L
+
+<PageBreadcrumb DynamicLeaf="@(_customer?.DisplayName)" Localizer="@L" />
+
+@if (_customer is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <MudText Typo="Typo.h4" Class="mb-4">@_customer.DisplayName</MudText>
+
+    <MudPaper Class="pa-6" Elevation="1">
+        <EditForm Model="_form" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudGrid Spacing="3">
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L["name"]" @bind-Value="_form.DisplayName" Required="true" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L["email"]" @bind-Value="_form.Email" Required="true" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L["phone"]" @bind-Value="_form.Phone" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L["document"]" @bind-Value="_form.Document" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudTextField Label="@L["notes"]" @bind-Value="_form.Notes" Variant="Variant.Outlined" Lines="3" />
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSwitch @bind-Value="_form.IsActive" Color="Color.Success" Label="@L["active"]" />
+                </MudItem>
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.Delete"
+                               OnClick="OnDelete" Disabled="_submitting">
+                        @L["delete"]
+                    </MudButton>
+                    <div>
+                        <MudButton Variant="Variant.Text" OnClick="@(() => Navigation.NavigateTo("/customers"))" Class="mr-2">
+                            @L["cancel"]
+                        </MudButton>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
+                                   Disabled="_submitting">
+                            @(_submitting ? L["saving"] : L["save"])
+                        </MudButton>
+                    </div>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </MudPaper>
+}
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+
+    private CustomerDto? _customer;
+    private FormModel _form = new();
+    private bool _submitting;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            _customer = await Api.GetByIdAsync(Id);
+            _form = FormModel.From(_customer);
+        }
+        catch (Exception)
+        {
+            _customer = null;
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (_customer is null) return;
+        _submitting = true;
+        try
+        {
+            _customer = await Api.UpdateAsync(Id, new UpdateCustomerRequest(
+                _form.DisplayName, _form.Email, _form.Phone, _form.Document, _form.Notes,
+                _form.IsActive, CustomFields: null));
+            _form = FormModel.From(_customer);
+            Snackbar.Add(L["success"], Severity.Success);
+        }
+        catch (Exception)
+        {
+            Snackbar.Add(L["failure"], Severity.Error);
+        }
+        finally
+        {
+            _submitting = false;
+        }
+    }
+
+    private async Task OnDelete()
+    {
+        bool? confirmed = await Dialog.ShowMessageBox(
+            L["confirmDelete"], L["confirmDeleteBody"], yesText: L["delete"], cancelText: L["cancel"]);
+        if (confirmed != true) return;
+
+        try
+        {
+            await Api.DeleteAsync(Id);
+            Snackbar.Add(L["deleted"], Severity.Success);
+            Navigation.NavigateTo("/customers");
+        }
+        catch (Exception)
+        {
+            Snackbar.Add(L["failure"], Severity.Error);
+        }
+    }
+
+    private sealed class FormModel
+    {
+        public string DisplayName { get; set; } = string.Empty;
+
+        public string Email { get; set; } = string.Empty;
+
+        public string? Phone { get; set; }
+
+        public string? Document { get; set; }
+
+        public string? Notes { get; set; }
+
+        public bool IsActive { get; set; } = true;
+
+        public static FormModel From(CustomerDto c) => new()
+        {
+            DisplayName = c.DisplayName,
+            Email = c.Email,
+            Phone = c.Phone,
+            Document = c.Document,
+            Notes = c.Notes,
+            IsActive = c.IsActive,
+        };
+    }
+}

@@ -10,6 +10,7 @@ using Luga.BuildingBlocks.Server.Idempotency;
 using Luga.BuildingBlocks.Server.Observability;
 using Luga.BuildingBlocks.Server.Tenancy;
 using Luga.Modules.Core.Server;
+using Luga.Modules.Customers.Server;
 using Luga.Modules.Marketing.Server;
 using Luga.Modules.Personalization.Server;
 
@@ -47,6 +48,7 @@ Assembly[] moduleAssemblies =
     CoreServerModule.Assembly,
     MarketingServerModule.Assembly,
     PersonalizationServerModule.Assembly,
+    CustomersServerModule.Assembly,
 ];
 
 builder.Services.AddMediatR(cfg =>
@@ -62,12 +64,14 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddCoreServerModule(builder.Configuration);
 builder.Services.AddMarketingServerModule(builder.Configuration);
 builder.Services.AddPersonalizationServerModule(builder.Configuration);
+builder.Services.AddCustomersServerModule(builder.Configuration);
 
 // ---------- MVC + module application parts ----------
 builder.Services.AddControllers()
     .AddApplicationPart(CoreServerModule.Assembly)
     .AddApplicationPart(MarketingServerModule.Assembly)
-    .AddApplicationPart(PersonalizationServerModule.Assembly);
+    .AddApplicationPart(PersonalizationServerModule.Assembly)
+    .AddApplicationPart(CustomersServerModule.Assembly);
 
 // ---------- OpenAPI ----------
 builder.Services.AddOpenApi();

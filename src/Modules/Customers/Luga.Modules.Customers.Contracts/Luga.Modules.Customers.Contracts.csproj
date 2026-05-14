@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.IntegrationEvents\Luga.BuildingBlocks.IntegrationEvents.csproj" />
+  </ItemGroup>
+
+</Project>

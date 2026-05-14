@@ -1,0 +1,13 @@
+{
+  "pageTitle": "Novo customer",
+  "name": "Nome",
+  "email": "E-mail",
+  "phone": "Telefone",
+  "document": "CPF / CNPJ",
+  "notes": "Observações",
+  "save": "Salvar",
+  "saving": "Salvando…",
+  "cancel": "Cancelar",
+  "success": "Customer cadastrado com sucesso.",
+  "failure": "Não foi possível salvar. Verifique os dados e tente novamente."
+}

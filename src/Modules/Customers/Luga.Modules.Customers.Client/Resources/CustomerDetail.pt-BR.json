@@ -1,0 +1,18 @@
+{
+  "pageTitle": "Detalhes do customer",
+  "name": "Nome",
+  "email": "E-mail",
+  "phone": "Telefone",
+  "document": "CPF / CNPJ",
+  "notes": "Observações",
+  "active": "Ativo",
+  "save": "Salvar",
+  "saving": "Salvando…",
+  "cancel": "Cancelar",
+  "delete": "Excluir",
+  "success": "Alterações salvas.",
+  "failure": "Não foi possível concluir a operação.",
+  "deleted": "Customer excluído.",
+  "confirmDelete": "Excluir customer?",
+  "confirmDeleteBody": "Esta ação remove o customer (soft delete). Você pode restaurar via banco se necessário."
+}

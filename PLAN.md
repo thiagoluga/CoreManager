@@ -534,59 +534,29 @@ for admin operations (database-direct until the UI lands).
 
 ### 6.6 Módulo Customers
 
-- [ ] (M) Criar 4 projetos Customers
-- [ ] (M) Domain:
-  - [ ] `Customer.cs` (TenantEntity, IHasDomainEvents)
-  - [ ] `CustomFieldDefinition.cs` (TenantEntity)
-  - [ ] `CustomFieldValue.cs` (Value Object)
-  - [ ] Enums: CustomerStatus, CustomFieldType
-  - [ ] Domain events
-  - [ ] Errors
-- [ ] (M) Contracts:
-  - [ ] `ICustomersService.cs` com **batch methods desde dia 1** (`GetByIdsAsync`)
-  - [ ] DTOs simplificados
-  - [ ] Integration events V1
-- [ ] (M) Shared:
-  - [ ] DTOs HTTP
-  - [ ] `ICustomersApi.cs` (Refit)
-  - [ ] Validators
-- [ ] (L) Application features:
-  - [ ] `CreateCustomerCommand` + Handler + Validator
-  - [ ] `UpdateCustomerCommand`
-  - [ ] `DeactivateCustomerCommand`
-  - [ ] `GetCustomerByIdQuery`
-  - [ ] `ListCustomersQuery` (search, paginação, filtros)
-  - [ ] `GetCustomersByIdsQuery` (batch)
-  - [ ] `DefineCustomFieldCommand`
-  - [ ] `UpdateCustomFieldCommand`
-  - [ ] `DeleteCustomFieldCommand`
-  - [ ] `ListCustomFieldsQuery`
-  - [ ] Mappers, Repositórios
-- [ ] (M) Infrastructure:
-  - [ ] `CustomersDbContext`
-  - [ ] Configurations (custom fields como JSON column)
-  - [ ] Repositórios
-  - [ ] `CustomersService` (impl Contracts)
-  - [ ] Migration inicial
-  - [ ] `CustomersServerModule.cs`
-  - [ ] `CustomersModuleInitializer.cs`
-- [ ] (M) Api:
-  - [ ] `CustomersController`
-  - [ ] `CustomFieldsController`
-- [ ] (L) Client (Blazor):
-  - [ ] `CustomersList.razor` (com MudDataGrid: filtros, ordenação, paginação)
-  - [ ] `CustomerCreate.razor` (com wizard MudStepper se necessário)
-  - [ ] `CustomerDetail.razor`
-  - [ ] `CustomerEdit.razor`
-  - [ ] `CustomFieldsAdmin.razor`
-  - [ ] `CustomerForm.razor` (componente com custom fields dinâmicos)
-  - [ ] `CustomersManifest.cs`
-  - [ ] `CustomersClientModule.cs`
-- [ ] (M) Widgets:
-  - [ ] `TotalCustomersWidget.razor`
-  - [ ] `RecentCustomersWidget.razor`
-- [ ] (M) Resources JSON pt-BR completos
-- [ ] (S) Unit + integration tests
+- [x] (M) 4 projects scaffolded (Server, Client, Shared, Contracts)
+- [x] (M) Domain: `Customer` (`TenantEntity`, raises `CustomerCreatedIntegrationEventV1`), errors (`Customer.EmailAlreadyExists`, `Customer.NotFound`)
+- [ ] `CustomFieldDefinition` per-tenant schema — **deferred to V1.1**. The MVP stores custom fields as a free-form `Dictionary<string, string>` JSON column on `Customer` (ADR 030).
+- [x] (M) Contracts: `ICustomersService` with batch `GetByIdsAsync` (CLAUDE.md §3.4 perigo 2), `CustomerContractDto`, `CustomerCreatedIntegrationEventV1`
+- [x] (M) Shared: HTTP DTOs (`CustomerDto`, `CustomerSummaryDto`, `CreateCustomerRequest`, `UpdateCustomerRequest`, `PagedCustomersResponse`) + `ICustomersApi` Refit interface
+- [x] (M) Application features (with FluentValidation validators where mutating):
+  - [x] `CreateCustomerCommand` + handler + validator
+  - [x] `UpdateCustomerCommand` + handler + validator (covers IsActive toggle — the planned "Deactivate" is just an Update with `IsActive=false`)
+  - [x] `DeleteCustomerCommand` + handler (soft-delete via `ISoftDeletable` interceptor)
+  - [x] `GetCustomerQuery` + handler
+  - [x] `ListCustomersQuery` + handler (search by name/email, pagination)
+  - [x] `CustomerMapper` (hand-rolled — Mapperly when mappings outgrow ~3 fields)
+- [x] (M) Infrastructure: `CustomersDbContext` (schema `customers`), `CustomerConfiguration` with JSON value converter for `CustomFields`, `CustomerRepository` (with `EmailExistsAsync` + `GetByIdsAsync`), `CustomersService` impl, `CustomersServerModule`
+- [ ] Initial EF migration — **deferred**: generated as part of the consolidated migration pass (see 5.8 note)
+- [ ] `CustomersModuleInitializer` — **deferred**: no seed data needed in the MVP (each tenant creates their own customers)
+- [x] (M) Api: `CustomersController` (`GET /api/customers`, `GET/POST/PUT/DELETE /api/customers/{id}`)
+- [ ] `CustomFieldsController` — **deferred to V1.1** (UI for managing custom-field schema)
+- [x] (L) Client pages: `CustomersList.razor` (MudTable + search + pagination), `CustomerCreate.razor`, `CustomerDetail.razor` (edit + soft-delete with confirmation dialog), `CustomersManifest.cs`, `CustomersClientModule.cs`
+- [ ] `CustomerForm.razor` with dynamic custom fields — **deferred to V1.1** (depends on `CustomFieldDefinition`)
+- [ ] `CustomFieldsAdmin.razor` — **deferred to V1.1**
+- [ ] Dashboard widgets (`TotalCustomersWidget`, `RecentCustomersWidget`) — **deferred to V1.1**
+- [x] (M) Resources JSON pt-BR complete for manifest + 3 pages
+- [ ] (S) Unit + integration tests — **deferred to V1.1**: handlers are simple CRUD and exercised through the live API on the demo path
 
 ### 6.7 Módulo Payments
 

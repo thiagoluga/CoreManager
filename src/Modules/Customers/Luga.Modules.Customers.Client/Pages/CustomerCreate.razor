@@ -1,0 +1,82 @@
+@page "/customers/new"
+@attribute [Authorize]
+@inherits LugaPageBase
+@inject ICustomersApi Api
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IStringLocalizer<CustomerCreate> L
+
+<PageBreadcrumb Localizer="@L" />
+
+<MudText Typo="Typo.h4" Class="mb-4">@L["pageTitle"]</MudText>
+
+<MudPaper Class="pa-6" Elevation="1">
+    <EditForm Model="_form" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator />
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["name"]" @bind-Value="_form.DisplayName" Required="true" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["email"]" @bind-Value="_form.Email" Required="true" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["phone"]" @bind-Value="_form.Phone" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["document"]" @bind-Value="_form.Document" Variant="Variant.Outlined" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="@L["notes"]" @bind-Value="_form.Notes" Variant="Variant.Outlined" Lines="3" />
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-end">
+                <MudButton Variant="Variant.Text" OnClick="@(() => Navigation.NavigateTo("/customers"))" Class="mr-2">
+                    @L["cancel"]
+                </MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
+                           Disabled="_submitting">
+                    @(_submitting ? L["saving"] : L["save"])
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+</MudPaper>
+
+@code {
+    private readonly FormModel _form = new();
+    private bool _submitting;
+
+    private async Task OnValidSubmit()
+    {
+        _submitting = true;
+        try
+        {
+            await Api.CreateAsync(new CreateCustomerRequest(
+                _form.DisplayName, _form.Email, _form.Phone, _form.Document, _form.Notes,
+                CustomFields: null));
+            Snackbar.Add(L["success"], Severity.Success);
+            Navigation.NavigateTo("/customers");
+        }
+        catch (Exception)
+        {
+            Snackbar.Add(L["failure"], Severity.Error);
+        }
+        finally
+        {
+            _submitting = false;
+        }
+    }
+
+    private sealed class FormModel
+    {
+        public string DisplayName { get; set; } = string.Empty;
+
+        public string Email { get; set; } = string.Empty;
+
+        public string? Phone { get; set; }
+
+        public string? Document { get; set; }
+
+        public string? Notes { get; set; }
+    }
+}

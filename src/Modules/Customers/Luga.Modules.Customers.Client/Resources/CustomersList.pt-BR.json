@@ -1,0 +1,12 @@
+{
+  "pageTitle": "Customers",
+  "search": "Buscar por nome ou e-mail",
+  "new": "Novo customer",
+  "empty": "Nenhum customer cadastrado ainda.",
+  "columnName": "Nome",
+  "columnEmail": "E-mail",
+  "columnPhone": "Telefone",
+  "columnStatus": "Status",
+  "statusActive": "Ativo",
+  "statusInactive": "Inativo"
+}
