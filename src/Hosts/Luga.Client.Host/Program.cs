@@ -3,6 +3,7 @@ using System.Globalization;
 using Luga.BuildingBlocks.Client;
 using Luga.Client.Host;
 using Luga.Modules.Core.Client;
+using Luga.Modules.Marketing.Client;
 
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -39,6 +40,7 @@ builder.Services.AddLugaBuildingBlocksClient(localization =>
 
 // ---------- Modules ----------
 builder.Services.AddCoreClientModule();
+builder.Services.AddMarketingClientModule();
 
 // ---------- Default UI culture ----------
 // User > tenant > browser cascading happens in the ILugaCultureProvider after login;

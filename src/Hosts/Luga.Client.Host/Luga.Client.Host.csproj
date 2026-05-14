@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Luga.BuildingBlocks.Client\Luga.BuildingBlocks.Client.csproj" />
     <ProjectReference Include="..\..\Modules\Core\Luga.Modules.Core.Client\Luga.Modules.Core.Client.csproj" />
+    <ProjectReference Include="..\..\Modules\Marketing\Luga.Modules.Marketing.Client\Luga.Modules.Marketing.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

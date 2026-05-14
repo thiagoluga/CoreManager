@@ -1,0 +1,12 @@
+{
+  "manifest.marketing.displayName": "Marketing",
+  "manifest.marketing.menu.home": "Início",
+  "manifest.marketing.menu.pricing": "Planos",
+  "manifest.marketing.menu.modules": "Módulos",
+  "manifest.marketing.menu.about": "Sobre",
+  "manifest.marketing.menu.contact": "Contato",
+  "manifest.marketing.breadcrumb.pricing": "Planos",
+  "manifest.marketing.breadcrumb.modules": "Módulos",
+  "manifest.marketing.breadcrumb.about": "Sobre",
+  "manifest.marketing.breadcrumb.contact": "Contato"
+}

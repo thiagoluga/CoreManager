@@ -1,0 +1,35 @@
+@page "/modules"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@inject IStringLocalizer<Modules> L
+
+<PageTitle>@L["pageTitle"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-12">
+    <PageBreadcrumb Localizer="@L" />
+
+    <MudText Typo="Typo.h3" Class="my-6">@L["title"]</MudText>
+    <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-8">@L["intro"]</MudText>
+
+    <MudGrid Spacing="4">
+        @foreach ((string key, string icon) in _modules)
+        {
+            <MudItem xs="12" md="6">
+                <MudPaper Class="pa-6" Elevation="1">
+                    <MudIcon Icon="@icon" Color="Color.Primary" Size="Size.Large" />
+                    <MudText Typo="Typo.h6" Class="mt-3">@L[$"module.{key}.title"]</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2">@L[$"module.{key}.description"]</MudText>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private static readonly (string Key, string Icon)[] _modules =
+    [
+        ("core", Icons.Material.Filled.Settings),
+        ("customers", Icons.Material.Filled.People),
+        ("payments", Icons.Material.Filled.Payments),
+        ("personalization", Icons.Material.Filled.Tune),
+    ];
+}

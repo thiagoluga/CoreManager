@@ -1,0 +1,80 @@
+@page "/pricing"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@inject IMarketingApi Api
+@inject IStringLocalizer<Pricing> L
+
+<PageTitle>@L["pageTitle"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-12">
+    <PageBreadcrumb Localizer="@L" />
+
+    <MudText Typo="Typo.h3" Class="my-6 text-center">@L["title"]</MudText>
+    <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-8 text-center">@L["subtitle"]</MudText>
+
+    @if (_plans is null)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    }
+    else if (_plans.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info">@L["empty"]</MudAlert>
+    }
+    else
+    {
+        <MudGrid Spacing="4">
+            @foreach (PublicPlanDto plan in _plans)
+            {
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-6 d-flex flex-column" Style="height: 100%;"
+                              Elevation="@(plan.IsHighlighted ? 4 : 1)">
+                        @if (plan.IsHighlighted)
+                        {
+                            <MudChip T="string" Color="Color.Primary" Size="Size.Small" Class="mb-3">@L["mostPopular"]</MudChip>
+                        }
+                        <MudText Typo="Typo.h5">@plan.Name</MudText>
+                        <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-4">@plan.Description</MudText>
+                        <MudText Typo="Typo.h4" Class="mb-1">
+                            @plan.MonthlyPrice.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))
+                            <MudText Typo="Typo.caption" Inline="true">@L["perMonth"]</MudText>
+                        </MudText>
+                        @if (plan.AnnualPrice.HasValue)
+                        {
+                            <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                @L["annual", plan.AnnualPrice.Value.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))]
+                            </MudText>
+                        }
+                        <MudDivider Class="my-4" />
+                        <MudText Typo="Typo.subtitle2" Class="mb-2">@L["modulesIncluded"]</MudText>
+                        <MudList T="string" Dense="true" Class="flex-grow-1">
+                            @foreach (string moduleCode in plan.IncludedModules)
+                            {
+                                <MudListItem T="string" Icon="@Icons.Material.Filled.Check">@moduleCode</MudListItem>
+                            }
+                        </MudList>
+                        <MudButton Variant="Variant.Filled" Color="@(plan.IsHighlighted ? Color.Primary : Color.Secondary)"
+                                   Size="Size.Large" Class="mt-4" FullWidth="true"
+                                   Href="@($"/login?plan={plan.Code}")">
+                            @L["selectPlan"]
+                        </MudButton>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+</MudContainer>
+
+@code {
+    private IReadOnlyList<PublicPlanDto>? _plans;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _plans = await Api.GetPlansAsync();
+        }
+        catch (Exception)
+        {
+            _plans = [];
+        }
+    }
+}

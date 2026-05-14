@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Cross-module surface for Marketing. Empty in the MVP — Marketing is a leaf
+    consumer (it reads Core.Contracts for the public plan catalog), nothing
+    consumes Marketing.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.IntegrationEvents\Luga.BuildingBlocks.IntegrationEvents.csproj" />
+  </ItemGroup>
+
+</Project>

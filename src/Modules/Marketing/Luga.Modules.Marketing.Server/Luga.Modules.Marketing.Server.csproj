@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Marketing.Server — public site backend.
+    Owns: marketing schema (empty in the MVP), `MarketingController` for the
+    public plan catalog and the contact form. Reads plan data from Core via
+    `ISubscriptionPlansService` (Core.Contracts).
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Application\Luga.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Domain\Luga.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Infrastructure\Luga.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Server\Luga.BuildingBlocks.Server.csproj" />
+    <ProjectReference Include="..\Luga.Modules.Marketing.Contracts\Luga.Modules.Marketing.Contracts.csproj" />
+    <ProjectReference Include="..\Luga.Modules.Marketing.Shared\Luga.Modules.Marketing.Shared.csproj" />
+    <ProjectReference Include="..\..\Core\Luga.Modules.Core.Contracts\Luga.Modules.Core.Contracts.csproj" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+</Project>

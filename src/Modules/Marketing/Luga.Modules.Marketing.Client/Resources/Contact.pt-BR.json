@@ -1,0 +1,13 @@
+{
+  "pageTitle": "Contato — Luga",
+  "title": "Fale com a gente",
+  "subtitle": "Conta o que você precisa e respondemos em um dia útil.",
+  "name": "Seu nome",
+  "email": "E-mail",
+  "company": "Empresa (opcional)",
+  "message": "Mensagem",
+  "send": "Enviar",
+  "sending": "Enviando…",
+  "success": "Mensagem enviada! Em breve respondemos.",
+  "failure": "Não foi possível enviar agora. Tente novamente em alguns minutos."
+}

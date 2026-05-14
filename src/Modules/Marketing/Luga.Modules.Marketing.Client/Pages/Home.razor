@@ -1,0 +1,37 @@
+@page "/"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@inject IStringLocalizer<Home> L
+@inject NavigationManager Navigation
+
+<PageTitle>@L["pageTitle"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-16">
+    <MudGrid Spacing="6">
+        <MudItem xs="12" md="7">
+            <MudText Typo="Typo.h2" Class="mb-4">@L["hero.title"]</MudText>
+            <MudText Typo="Typo.h6" Color="Color.Secondary" Class="mb-6">@L["hero.subtitle"]</MudText>
+            <MudStack Row="true" Spacing="3">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large"
+                           OnClick="@(() => Navigation.NavigateTo("/pricing"))">
+                    @L["hero.ctaPricing"]
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Large"
+                           OnClick="@(() => Navigation.NavigateTo("/login"))">
+                    @L["hero.ctaLogin"]
+                </MudButton>
+            </MudStack>
+        </MudItem>
+        <MudItem xs="12" md="5">
+            <MudPaper Class="pa-8" Elevation="0">
+                <MudIcon Icon="@Icons.Material.Filled.Rocket" Color="Color.Primary" Size="Size.Large" />
+                <MudText Typo="Typo.h6" Class="mt-3">@L["highlights.title"]</MudText>
+                <MudList T="string" Dense="true" Class="mt-3">
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">@L["highlights.item1"]</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">@L["highlights.item2"]</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">@L["highlights.item3"]</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Check">@L["highlights.item4"]</MudListItem>
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

@@ -1,0 +1,13 @@
+@page "/about"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@inject IStringLocalizer<About> L
+
+<PageTitle>@L["pageTitle"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="py-12">
+    <PageBreadcrumb Localizer="@L" />
+    <MudText Typo="Typo.h3" Class="my-6">@L["title"]</MudText>
+    <MudText Typo="Typo.body1" Class="mb-4">@L["paragraph1"]</MudText>
+    <MudText Typo="Typo.body1" Class="mb-4">@L["paragraph2"]</MudText>
+    <MudText Typo="Typo.body1">@L["paragraph3"]</MudText>
+</MudContainer>

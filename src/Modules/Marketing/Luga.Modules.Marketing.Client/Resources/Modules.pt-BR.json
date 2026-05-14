@@ -1,0 +1,13 @@
+{
+  "pageTitle": "Módulos — Luga",
+  "title": "Tudo que você precisa, em um único lugar",
+  "intro": "A Luga é uma plataforma multi-produto. Comece com o essencial e habilite módulos conforme o negócio cresce.",
+  "module.core.title": "Core",
+  "module.core.description": "Cadastro de tenants, usuários, autenticação e o catálogo de planos.",
+  "module.customers.title": "Customers",
+  "module.customers.description": "Base de clientes finais com campos customizados por tipo de negócio.",
+  "module.payments.title": "Payments",
+  "module.payments.description": "Planos de cobrança, mensalidades, faturas e integração com Asaas (Pix incluso).",
+  "module.personalization.title": "Personalization",
+  "module.personalization.description": "Roles, permissões e customização de menus por tenant."
+}

@@ -1,0 +1,77 @@
+@page "/contact"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@inject IMarketingApi Api
+@inject IStringLocalizer<Contact> L
+@inject ISnackbar Snackbar
+
+<PageTitle>@L["pageTitle"]</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="py-12">
+    <PageBreadcrumb Localizer="@L" />
+    <MudText Typo="Typo.h3" Class="my-6">@L["title"]</MudText>
+    <MudText Typo="Typo.body1" Color="Color.Secondary" Class="mb-8">@L["subtitle"]</MudText>
+
+    <MudPaper Class="pa-6" Elevation="1">
+        <EditForm Model="_model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudStack Spacing="3">
+                <MudTextField Label="@L["name"]" @bind-Value="_model.Name" Required="true" Variant="Variant.Outlined" />
+                <MudTextField Label="@L["email"]" @bind-Value="_model.Email" Required="true" Variant="Variant.Outlined" />
+                <MudTextField Label="@L["company"]" @bind-Value="_model.Company" Variant="Variant.Outlined" />
+                <MudTextField Label="@L["message"]" @bind-Value="_model.Message" Required="true"
+                              Lines="5" Variant="Variant.Outlined" />
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary"
+                           Disabled="_submitting">
+                    @(_submitting ? L["sending"] : L["send"])
+                </MudButton>
+            </MudStack>
+        </EditForm>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private readonly ContactFormModel _model = new();
+    private bool _submitting;
+
+    private async Task OnValidSubmit()
+    {
+        _submitting = true;
+        try
+        {
+            await Api.SubmitContactAsync(new ContactRequestDto(
+                _model.Name,
+                _model.Email,
+                _model.Company,
+                _model.Message));
+            Snackbar.Add(L["success"], Severity.Success);
+            _model.Reset();
+        }
+        catch (Exception)
+        {
+            Snackbar.Add(L["failure"], Severity.Error);
+        }
+        finally
+        {
+            _submitting = false;
+        }
+    }
+
+    private sealed class ContactFormModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public string Email { get; set; } = string.Empty;
+
+        public string? Company { get; set; }
+
+        public string Message { get; set; } = string.Empty;
+
+        public void Reset()
+        {
+            Name = string.Empty;
+            Email = string.Empty;
+            Company = null;
+            Message = string.Empty;
+        }
+    }
+}

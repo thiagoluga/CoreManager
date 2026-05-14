@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Marketing.Shared — DTOs that travel between the Marketing client pages and
+    the Marketing API (and the Refit interface that both sides use).
+  -->
+
+  <ItemGroup>
+    <PackageReference Include="Refit" />
+  </ItemGroup>
+
+</Project>

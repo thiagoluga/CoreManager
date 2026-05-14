@@ -447,25 +447,18 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 6.1 Módulo Marketing (institucional + planos públicos)
 
-- [ ] (M) Criar 4 projetos Marketing
-- [ ] (M) Domain (Server):
-  - [ ] Não precisa de muito; consome `ISubscriptionPlansService` (Core.Contracts)
-- [ ] (M) Application:
-  - [ ] `GetPublicPlansQuery` + Handler (lista planos para landing)
-- [ ] (M) Infrastructure:
-  - [ ] MarketingDbContext (schema "marketing") — vazio inicial, pode crescer
-  - [ ] Migration inicial
-  - [ ] `MarketingServerModule.cs`
-- [ ] (M) Api:
-  - [ ] `MarketingController` (POST /api/marketing/contact, GET /api/marketing/plans)
-- [ ] (L) Client (páginas Blazor WASM):
-  - [ ] `Home.razor` (landing)
-  - [ ] `Pricing.razor` (tabela de planos)
-  - [ ] `Modules.razor` (descrição dos módulos)
-  - [ ] `About.razor`
-  - [ ] `Contact.razor`
-  - [ ] Manifest declarando rotas e breadcrumbs
-- [ ] (M) i18n: Resources JSON em pt-BR completos
+- [x] (M) 4 projects scaffolded (Server, Client, Shared, Contracts)
+- [x] (M) Domain: Marketing consumes Core's `ISubscriptionPlansService` (new contract in Core.Contracts) plus its own DTOs in `Marketing.Shared`
+- [x] (M) `ISubscriptionPlansService` + `PlanContractDto` added to `Core.Contracts`; **MVP stub** `SubscriptionPlansService` in `Core.Server` returns three hardcoded plans (Starter / Pro / Business) — real catalog entities land in §6.2
+- [x] (M) Application: `GetPublicPlansQuery` + handler projecting `PlanContractDto` → `PublicPlanDto`; `SubmitContactCommand` + handler + `SubmitContactValidator` (FluentValidation)
+- [x] (M) Infrastructure: `MarketingDbContext` with `marketing` schema (empty model in the MVP), `MarketingServerModule.AddMarketingServerModule`
+- [ ] Initial EF migration — **deferred** until §6.2 has the real plan entities
+- [x] (M) Api: `MarketingController` (anonymous endpoints) — `GET /api/marketing/plans`, `POST /api/marketing/contact`
+- [x] (L) Client pages: `Home.razor`, `Pricing.razor`, `Modules.razor`, `About.razor`, `Contact.razor` (with `MudForm` + `ISnackbar`)
+- [x] (M) `MarketingManifest` declares `/`, `/pricing`, `/modules`, `/about`, `/contact` routes + breadcrumbs (i18n keys)
+- [x] (M) `MarketingClientModule.AddMarketingClientModule` registers manifest + Refit `IMarketingApi`
+- [x] (M) i18n: pt-BR resources complete for the 5 pages + manifest (`Resources/*.pt-BR.json`, marked `EmbeddedResource`)
+- [x] (S) Server.Host + Client.Host wired (project references, `AddXModule` calls, MediatR module assembly, `ApplicationPart`, App.razor `AdditionalAssemblies`)
 
 ### 6.2 Core: Sistema de Pricing
 
