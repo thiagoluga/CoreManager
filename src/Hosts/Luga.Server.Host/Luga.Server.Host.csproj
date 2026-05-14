@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\Modules\Marketing\Luga.Modules.Marketing.Server\Luga.Modules.Marketing.Server.csproj" />
     <ProjectReference Include="..\..\Modules\Personalization\Luga.Modules.Personalization.Server\Luga.Modules.Personalization.Server.csproj" />
     <ProjectReference Include="..\..\Modules\Customers\Luga.Modules.Customers.Server\Luga.Modules.Customers.Server.csproj" />
+    <ProjectReference Include="..\..\Modules\Payments\Luga.Modules.Payments.Server\Luga.Modules.Payments.Server.csproj" />
     <!--
       Referencing Client.Host pulls the published Blazor WASM output into wwwroot
       via Microsoft.AspNetCore.Components.WebAssembly.Server (the host serves

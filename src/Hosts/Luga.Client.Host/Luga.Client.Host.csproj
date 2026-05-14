@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\Modules\Marketing\Luga.Modules.Marketing.Client\Luga.Modules.Marketing.Client.csproj" />
     <ProjectReference Include="..\..\Modules\Personalization\Luga.Modules.Personalization.Client\Luga.Modules.Personalization.Client.csproj" />
     <ProjectReference Include="..\..\Modules\Customers\Luga.Modules.Customers.Client\Luga.Modules.Customers.Client.csproj" />
+    <ProjectReference Include="..\..\Modules\Payments\Luga.Modules.Payments.Client\Luga.Modules.Payments.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

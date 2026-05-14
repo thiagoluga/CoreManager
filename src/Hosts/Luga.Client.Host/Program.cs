@@ -5,6 +5,7 @@ using Luga.Client.Host;
 using Luga.Modules.Core.Client;
 using Luga.Modules.Customers.Client;
 using Luga.Modules.Marketing.Client;
+using Luga.Modules.Payments.Client;
 using Luga.Modules.Personalization.Client;
 
 using Microsoft.AspNetCore.Components.Web;
@@ -45,6 +46,7 @@ builder.Services.AddCoreClientModule();
 builder.Services.AddMarketingClientModule();
 builder.Services.AddPersonalizationClientModule();
 builder.Services.AddCustomersClientModule();
+builder.Services.AddPaymentsClientModule();
 
 // ---------- Default UI culture ----------
 // User > tenant > browser cascading happens in the ILugaCultureProvider after login;

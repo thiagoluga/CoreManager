@@ -1,8 +1,9 @@
 @using System.Reflection
 @using Luga.Modules.Core.Client
-@using Luga.Modules.Marketing.Client
-@using Luga.Modules.Personalization.Client
 @using Luga.Modules.Customers.Client
+@using Luga.Modules.Marketing.Client
+@using Luga.Modules.Payments.Client
+@using Luga.Modules.Personalization.Client
 
 @*
     Top-level Router. AdditionalAssemblies lists every module's Client assembly so
@@ -46,5 +47,6 @@
         typeof(MarketingClientModule).Assembly,
         typeof(PersonalizationClientModule).Assembly,
         typeof(CustomersClientModule).Assembly,
+        typeof(PaymentsClientModule).Assembly,
     ];
 }

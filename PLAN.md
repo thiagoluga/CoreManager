@@ -558,85 +558,35 @@ for admin operations (database-direct until the UI lands).
 - [x] (M) Resources JSON pt-BR complete for manifest + 3 pages
 - [ ] (S) Unit + integration tests — **deferred to V1.1**: handlers are simple CRUD and exercised through the live API on the demo path
 
-### 6.7 Módulo Payments
+### 6.7 Módulo Payments — MVP SCAFFOLD ONLY
 
-- [ ] (M) Criar 4 projetos Payments
-- [ ] (L) Domain:
-  - [ ] `TenantPlan.cs` (TenantEntity)
-  - [ ] `Subscription.cs` (TenantEntity)
-  - [ ] `Invoice.cs` (TenantEntity, com snapshot de customer)
-  - [ ] `Charge.cs` (TenantEntity)
-  - [ ] `GatewayAccount.cs` (TenantEntity)
-  - [ ] `TenantPixKey.cs` (TenantEntity, criptografada)
-  - [ ] `NotificationPolicy.cs` (TenantEntity)
-  - [ ] `NotificationRule.cs`
-  - [ ] `NotificationSchedule.cs` (TenantEntity)
-  - [ ] `NotificationTemplate.cs` (TenantEntity)
-  - [ ] Enums (vários)
-  - [ ] Máquinas de estado documentadas
-  - [ ] Domain events + Integration events V1
-  - [ ] Errors
-- [ ] (M) Contracts:
-  - [ ] `IPaymentsService.cs` com batch methods
-  - [ ] DTOs
-  - [ ] Integration events V1
-- [ ] (M) Shared:
-  - [ ] DTOs HTTP, Validators, Refit interface
-- [ ] (XL) Application features:
-  - [ ] TenantPlan CRUD
-  - [ ] Subscription (Create, Cancel, Get, List)
-  - [ ] Invoice (Generate via job, Get, List, MarkPaid)
-  - [ ] Charge (Create, MarkPaid, ProcessWebhook)
-  - [ ] Pix Keys (Register encrypted, List)
-  - [ ] NotificationPolicy CRUD
-  - [ ] NotificationTemplate CRUD + seed defaults
-  - [ ] Gateway abstraction:
-    - [ ] `IPaymentGateway.cs`
-    - [ ] `ManualPaymentGateway.cs`
-    - [ ] `AsaasPaymentGateway.cs`
-  - [ ] Mappers, Validators, Repositórios
-  - [ ] Event handlers (idempotentes, com ProcessedIntegrationEvents)
-- [ ] (L) Infrastructure:
-  - [ ] `PaymentsDbContext`
-  - [ ] Configurations (criptografia PixKey)
-  - [ ] Repositórios
-  - [ ] `PaymentsService`
-  - [ ] Asaas SDK integration (HttpClient + Polly)
-  - [ ] Webhook signature validation HMAC
-  - [ ] Migration inicial
-  - [ ] Background jobs:
-    - [ ] `GenerateInvoicesJob` (diário 06:00 BRT)
-    - [ ] `ProcessNotificationSchedulesJob` (hourly)
-    - [ ] `OutboxProcessorJob` (a cada 10s)
-    - [ ] `CleanupProcessedEventsJob` (semanal)
-  - [ ] `PaymentsServerModule.cs`
-  - [ ] `PaymentsModuleInitializer.cs` (seed templates default)
-- [ ] (M) Api:
-  - [ ] `TenantPlansController`
-  - [ ] `SubscriptionsController`
-  - [ ] `InvoicesController`
-  - [ ] `ChargesController`
-  - [ ] `PixKeysController`
-  - [ ] `NotificationPoliciesController`
-  - [ ] `NotificationTemplatesController`
-  - [ ] `WebhooksController` (POST /api/webhooks/asaas)
-- [ ] (XL) Client (Blazor):
-  - [ ] `TenantPlansList.razor` + CRUD
-  - [ ] `SubscriptionsList.razor` + Create (assigning customer + plan)
-  - [ ] `InvoicesList.razor` (com MudDataGrid)
-  - [ ] `InvoiceDetail.razor` (com botão WhatsApp deep link wa.me)
-  - [ ] `MarkInvoicePaid.razor` (modal)
-  - [ ] `NotificationPolicyEditor.razor`
-  - [ ] `NotificationTemplateEditor.razor`
-  - [ ] `TenantPixKeysAdmin.razor`
-  - [ ] `AsaasOnboarding.razor` (fluxo subconta)
-  - [ ] `PaymentsManifest.cs`
-- [ ] (M) Widgets:
-  - [ ] `OverdueInvoicesWidget.razor`
-  - [ ] `RevenueChartWidget.razor`
-  - [ ] `PendingNotificationsWidget.razor`
-- [ ] (M) Resources JSON pt-BR completos
-- [ ] (M) Unit + integration tests
+The full Payments surface is the XL section in this plan. The MVP ships
+**scaffolding for the three core entities** so the module is wired and the
+schema/migrations are in place. Command handlers, controllers, Asaas
+integration, notification policies and the heavy admin UI move to V1.1.
+
+What landed in the MVP:
+
+- [x] (M) 4 projects scaffolded (Server, Client, Shared, Contracts)
+- [x] (M) Core Domain entities: `TenantPlan` (TenantEntity), `Subscription` (TenantEntity), `Invoice` (TenantEntity, with `MarkAsPaid` domain method); `InvoiceStatus` enum
+- [x] (M) Infrastructure: `PaymentsDbContext` (schema `payments`), EF configurations for all three entities, `PaymentsServerModule.AddPaymentsServerModule`
+- [x] (S) `PaymentsManifest` + `PaymentsClientModule.AddPaymentsClientModule` (manifest declares the `/invoices` menu placeholder — page itself is V1.1)
+- [x] (S) `InvoiceDto` HTTP DTO ready for the V1.1 controller
+
+Deferred to V1.1 (explicit list so the V1.1 backlog can pick this up directly):
+
+- [ ] Domain extras: `Charge`, `GatewayAccount`, `TenantPixKey`, `NotificationPolicy`, `NotificationRule`, `NotificationSchedule`, `NotificationTemplate`, full state machines, domain/integration events
+- [ ] Contracts: `IPaymentsService` + DTOs + integration events V1
+- [ ] Application: CRUD handlers for TenantPlan / Subscription / Invoice, gateway abstraction (`IPaymentGateway` + `ManualPaymentGateway` + `AsaasPaymentGateway`)
+- [ ] Infrastructure: Asaas HttpClient (Polly), HMAC webhook validation, PixKey encryption, Hangfire jobs (`GenerateInvoicesJob`, `ProcessNotificationSchedulesJob`, `OutboxProcessorJob`, `CleanupProcessedEventsJob`), `PaymentsModuleInitializer` (notification template seeds)
+- [ ] Api: `TenantPlansController`, `SubscriptionsController`, `InvoicesController`, `ChargesController`, `PixKeysController`, `NotificationPoliciesController`, `NotificationTemplatesController`, `WebhooksController` for `POST /api/webhooks/asaas`
+- [ ] Client pages: `TenantPlansList` + CRUD, `SubscriptionsList`, `InvoicesList`, `InvoiceDetail` (with `wa.me` deep link), `MarkInvoicePaid` modal, `NotificationPolicyEditor`, `NotificationTemplateEditor`, `TenantPixKeysAdmin`, `AsaasOnboarding`
+- [ ] Dashboard widgets (`OverdueInvoicesWidget`, `RevenueChartWidget`, `PendingNotificationsWidget`)
+- [ ] Unit + integration tests for the gateway abstraction and webhook idempotency
+
+Why the deep deferral: the MVP demo focuses on Customers (§6.6). Payments
+without the operator-facing flows is a half-baked story; better to ship the
+complete experience in V1.1 than half a UI and half an integration in the MVP.
 
 ### 6.8 Hardening pré-produção
 
