@@ -333,17 +333,25 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.9 Luga.Client.Host (Blazor WASM bootstrap)
 
-- [ ] (M) `Program.cs` configurando:
-  - [ ] MudBlazor
-  - [ ] Tailwind v4
-  - [ ] MSAL authentication
-  - [ ] HttpClient + Refit clients
-  - [ ] Localization
-  - [ ] PWA registration
-- [ ] (M) `App.razor` com Router e AdditionalAssemblies
-- [ ] (M) `wwwroot/index.html`
-- [ ] (M) PWA: manifest.json, service-worker.js, ícones
-- [ ] (S) Login page funcional integrada com API
+- [x] (M) `Program.cs` wired with:
+  - [x] MudBlazor (via `AddLugaBuildingBlocksClient` → `AddMudServices`)
+  - [ ] Tailwind v4 — **deferred**: `app.css` carries a placeholder note; npm-based Tailwind build pipeline is V1.1 scope
+  - [x] MSAL authentication (`AddMsalAuthentication` reading `EntraExternalId` section)
+  - [x] HttpClient (same-origin to host) — Refit clients registered by each `X.ClientModule`
+  - [x] Localization (`AddLugaLocalization` with pt-BR/en-US/es-ES, pt-BR fallback)
+  - [x] Default thread culture locked before first render
+  - [x] PWA registration (service-worker registered in `index.html` behind a feature check)
+- [x] (M) `App.razor` with `<CascadingAuthenticationState>` + `<Router>` + `AdditionalAssemblies` (explicit list, starts with `CoreClientModule.Assembly`) + `<AuthorizeRouteView>` + `<NotAuthorized>` → `RedirectToLogin` + `NotFoundPage` from BuildingBlocks
+- [x] (M) `wwwroot/index.html` (Roboto + MudBlazor CSS/JS, MSAL `AuthenticationService.js`, `theme-color`, mobile viewport, pt-BR lang, dropped Bootstrap)
+- [x] (M) PWA: `manifest.webmanifest` (Luga-branded, `purpose: any maskable`, scope, description, lang) + existing `service-worker.js` / `service-worker.published.js` / icons retained
+- [x] (S) Auth pages in `Client.Host/Pages/`:
+  - [x] `Authentication.razor` (`/authentication/{action}` → `RemoteAuthenticatorView`) under `AuthLayout`
+  - [x] `Login.razor` (`/login` → `NavigateToLogin` with returnUrl, under `AuthLayout`, i18n via `Resources/Login.{pt-BR,en-US,es-ES}.json`)
+  - [x] `Shared/RedirectToLogin.razor` (preserves returnUrl)
+- [x] (S) `wwwroot/appsettings.json` with `EntraExternalId` MSAL config + `Api.BaseUrl`
+- [x] (S) Removed Bootstrap/template `Layout/` + `Pages/` from Client.Host — layouts owned by `BuildingBlocks.Client.Layouts`
+
+> **Note:** MSAL `ClientId` and the actual Entra External ID tenant URLs in `appsettings.json` are placeholders. Real values come from Azure setup in §5.12.
 
 ### 5.10 Aspire (Luga.AppHost)
 

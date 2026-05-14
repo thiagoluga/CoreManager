@@ -1,6 +1,44 @@
-﻿<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-</Router>
+@using System.Reflection
+@using Luga.Modules.Core.Client
+
+@*
+    Top-level Router. AdditionalAssemblies lists every module's Client assembly so
+    pages declared with @page in those projects are routable through this host
+    (CLAUDE.md §8.1). New modules add their assembly type here.
+*@
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly"
+            AdditionalAssemblies="@_moduleAssemblies"
+            NotFoundPage="typeof(NotFoundPage)">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        <MudContainer MaxWidth="MaxWidth.Small" Class="my-16 text-center">
+                            <MudPaper Class="pa-8" Elevation="0">
+                                <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" Size="Size.Large" />
+                                <MudText Typo="Typo.h5" Class="mt-4">Acesso negado</MudText>
+                            </MudPaper>
+                        </MudContainer>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    // Listing module assemblies here keeps route discovery explicit: a new module
+    // requires a deliberate addition (and matching ProjectReference in the .csproj).
+    private static readonly Assembly[] _moduleAssemblies =
+    [
+        typeof(CoreClientModule).Assembly,
+    ];
+}

@@ -1,9 +1,13 @@
 {
-  "name": "Luga.Client.Host",
-  "short_name": "Luga.Client.Host",
+  "name": "Luga CoreManager",
+  "short_name": "Luga",
+  "description": "Plataforma SaaS B2B brasileira multi-produto para SMBs.",
+  "lang": "pt-BR",
   "id": "./",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#ffffff",
   "theme_color": "#03173d",
   "prefer_related_applications": false,
@@ -11,12 +15,14 @@
     {
       "src": "icon-512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     }
   ]
 }

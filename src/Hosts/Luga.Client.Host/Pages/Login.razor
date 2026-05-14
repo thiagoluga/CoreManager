@@ -1,0 +1,34 @@
+@page "/login"
+@layout AuthLayout
+@inject NavigationManager Navigation
+@inject IStringLocalizer<Login> L
+
+@*
+    Entry point shown when an unauthenticated user lands on a protected route or
+    explicitly visits /login. The actual OIDC dance is handled by
+    /authentication/{action} below — this page just triggers the redirect.
+*@
+
+<MudText Typo="Typo.h5" Class="mb-4 text-center">@L["title"]</MudText>
+<MudText Typo="Typo.body1" Class="mb-6 text-center">@L["subtitle"]</MudText>
+
+<AuthorizeView>
+    <Authorized>
+        <MudAlert Severity="Severity.Info" Class="my-4">@L["alreadySignedIn"]</MudAlert>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" OnClick="GoHome">
+            @L["goHome"]
+        </MudButton>
+    </Authorized>
+    <NotAuthorized>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true"
+                   StartIcon="@Icons.Material.Filled.Login" OnClick="SignIn">
+            @L["signIn"]
+        </MudButton>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private void SignIn() => Navigation.NavigateToLogin("authentication/login");
+
+    private void GoHome() => Navigation.NavigateTo("/");
+}

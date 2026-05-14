@@ -1,0 +1,15 @@
+@page "/authentication/{action}"
+@layout AuthLayout
+
+@*
+    Catch-all OIDC redirect handler. Maps the MSAL action segments
+    (login, login-callback, logout, logout-callback, etc.) to their built-in
+    Microsoft components. Hosted inside the AuthLayout so the user sees the
+    branded centered card while the redirect dance happens.
+*@
+
+<RemoteAuthenticatorView Action="@Action" />
+
+@code {
+    [Parameter] public string? Action { get; set; }
+}

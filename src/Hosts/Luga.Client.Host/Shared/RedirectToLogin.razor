@@ -1,0 +1,19 @@
+@inject NavigationManager Navigation
+
+@*
+    Redirects the user to /authentication/login while preserving the originating
+    URL as a returnUrl query parameter so MSAL can land them back where they were
+    after a successful sign-in.
+*@
+
+@code {
+    protected override void OnInitialized()
+    {
+        string returnUrl = Navigation.ToBaseRelativePath(Navigation.Uri);
+        Navigation.NavigateToLogin("authentication/login", new InteractiveRequestOptions
+        {
+            Interaction = InteractionType.SignIn,
+            ReturnUrl = $"{Navigation.BaseUri}{returnUrl}",
+        });
+    }
+}
