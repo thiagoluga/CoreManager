@@ -256,9 +256,9 @@ luga-coremanager/                          # único repo no GitHub
 ├── Directory.Build.props
 ├── Directory.Packages.props
 ├── global.json
-├── Luga.CoreManager.sln
 │
 ├── src/
+│   ├── Luga.CoreManager.slnx                # .slnx (.NET 10 default)
 │   ├── BuildingBlocks/
 │   │   ├── Luga.BuildingBlocks.Domain/
 │   │   ├── Luga.BuildingBlocks.Application/

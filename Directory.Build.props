@@ -1,0 +1,35 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!--
+      CA1014: assembly não precisa de CLSCompliant.
+      CS1591: comentário XML ausente — pragmático, não exigimos doc em todo membro.
+      SA1633: file header / copyright — não usamos.
+      IDE0211: usamos top-level statements em Program.cs.
+    -->
+    <NoWarn>$(NoWarn);CA1014;CS1591;SA1633;IDE0211</NoWarn>
+    <IsPackable>false</IsPackable>
+    <NeutralLanguage>pt-BR</NeutralLanguage>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+    <Company>Luga</Company>
+    <Product>Luga CoreManager</Product>
+    <Copyright>Copyright © Luga $([System.DateTime]::Now.Year)</Copyright>
+  </PropertyGroup>
+
+  <!-- Test overrides aplicados via Directory.Build.targets (após csproj definir IsTestProject). -->
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

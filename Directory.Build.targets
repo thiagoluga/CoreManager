@@ -1,0 +1,18 @@
+<Project>
+
+  <!--
+    Targets aplicados APÓS o csproj ser carregado.
+    Necessário para overrides que dependem de propriedades definidas no próprio csproj
+    (ex.: IsTestProject, que o SDK de teste define no carregamento).
+  -->
+
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!--
+      Naming de testes: [Method]_[Scenario]_[Expected] — sublinhados são intencionais.
+      CLAUDE.md §17.
+    -->
+    <NoWarn>$(NoWarn);CA1707;CA2007;CS1591;xUnit1031</NoWarn>
+  </PropertyGroup>
+
+</Project>

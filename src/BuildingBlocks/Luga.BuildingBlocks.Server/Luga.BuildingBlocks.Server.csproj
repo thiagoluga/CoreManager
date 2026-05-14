@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BuildingBlocks.Server — utilitários compartilhados pelos *.Server dos módulos.
+    IModuleInitializer, controllers base, filtros, etc.
+    FrameworkReference em vez de Sdk.Web (não é projeto startup).
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Luga.BuildingBlocks.Application\Luga.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\Luga.BuildingBlocks.Infrastructure\Luga.BuildingBlocks.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    Luga.Server.Host — API + serve Blazor WASM estático.
+    Composition root do back. Referencia TODOS os módulos *.Server.
+  -->
+
+  <PropertyGroup>
+    <UserSecretsId>luga-server-host</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\Luga.BuildingBlocks.Server\Luga.BuildingBlocks.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Scalar.AspNetCore" />
+  </ItemGroup>
+
+</Project>

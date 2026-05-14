@@ -134,23 +134,24 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.2 Solution e Projetos Base
 
-- [ ] (S) Criar `Luga.CoreManager.sln`
-- [ ] (S) `Directory.Build.props` (Nullable, ImplicitUsings, LangVersion, TreatWarningsAsErrors)
-- [ ] (S) `Directory.Packages.props` (Central Package Management)
-- [ ] (S) `global.json` (SDK pinado em 10.0.x)
-- [ ] (M) Criar projetos BuildingBlocks:
-  - [ ] `Luga.BuildingBlocks.Domain`
-  - [ ] `Luga.BuildingBlocks.Application`
-  - [ ] `Luga.BuildingBlocks.Infrastructure`
-  - [ ] `Luga.BuildingBlocks.IntegrationEvents`
-  - [ ] `Luga.BuildingBlocks.Server`
-  - [ ] `Luga.BuildingBlocks.Client`
-- [ ] (M) Criar projetos Hosts:
-  - [ ] `Luga.Server.Host` (API)
-  - [ ] `Luga.Client.Host` (Blazor WASM)
-- [ ] (S) Criar `Luga.AppHost` (Aspire)
-- [ ] (S) Criar projetos de testes (Architecture, BuildingBlocks)
-- [ ] (S) Configurar references entre projetos conforme regras
+- [x] (S) Criar `src/Luga.CoreManager.slnx` (formato `.slnx` — .NET 10 default; movido para `src/`)
+- [x] (S) `Directory.Build.props` (Nullable, ImplicitUsings, LangVersion, TreatWarningsAsErrors)
+- [x] (S) `Directory.Build.targets` (overrides aplicados após csproj — IsTestProject)
+- [x] (S) `Directory.Packages.props` (Central Package Management)
+- [x] (S) `global.json` (SDK pinado em 10.0.203)
+- [x] (M) Criar projetos BuildingBlocks:
+  - [x] `Luga.BuildingBlocks.Domain`
+  - [x] `Luga.BuildingBlocks.Application`
+  - [x] `Luga.BuildingBlocks.Infrastructure`
+  - [x] `Luga.BuildingBlocks.IntegrationEvents`
+  - [x] `Luga.BuildingBlocks.Server`
+  - [x] `Luga.BuildingBlocks.Client`
+- [x] (M) Criar projetos Hosts:
+  - [x] `Luga.Server.Host` (API)
+  - [x] `Luga.Client.Host` (Blazor WASM)
+- [x] (S) Criar `Luga.AppHost` (Aspire 13.3.0)
+- [x] (S) Criar projetos de testes (Architecture, BuildingBlocks)
+- [x] (S) Configurar references entre projetos conforme regras
 
 ### 5.3 BuildingBlocks.Domain
 

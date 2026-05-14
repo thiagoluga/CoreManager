@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    BuildingBlocks.Client — base do front (Blazor) compartilhada por todos os módulos.
+    LugaPageBase, IModuleManifest, MainLayout, etc.
+    Regra: NÃO depende de Infrastructure.
+  -->
+
+  <PropertyGroup>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Luga.BuildingBlocks.IntegrationEvents\Luga.BuildingBlocks.IntegrationEvents.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.Extensions.Localization" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />
+    <PackageReference Include="MudBlazor" />
+    <PackageReference Include="My.Extensions.Localization.Json" />
+  </ItemGroup>
+
+</Project>

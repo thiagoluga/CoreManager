@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/AppHost/">
+    <Project Path="AppHost/Luga.AppHost/Luga.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="BuildingBlocks/Luga.BuildingBlocks.Application/Luga.BuildingBlocks.Application.csproj" />
+    <Project Path="BuildingBlocks/Luga.BuildingBlocks.Client/Luga.BuildingBlocks.Client.csproj" />
+    <Project Path="BuildingBlocks/Luga.BuildingBlocks.Domain/Luga.BuildingBlocks.Domain.csproj" />
+    <Project Path="BuildingBlocks/Luga.BuildingBlocks.Infrastructure/Luga.BuildingBlocks.Infrastructure.csproj" />
+    <Project Path="BuildingBlocks/Luga.BuildingBlocks.IntegrationEvents/Luga.BuildingBlocks.IntegrationEvents.csproj" />
+    <Project Path="BuildingBlocks/Luga.BuildingBlocks.Server/Luga.BuildingBlocks.Server.csproj" />
+  </Folder>
+  <Folder Name="/src/Hosts/">
+    <Project Path="Hosts/Luga.Client.Host/Luga.Client.Host.csproj" />
+    <Project Path="Hosts/Luga.Server.Host/Luga.Server.Host.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Architecture/">
+    <Project Path="../tests/Architecture/Luga.Tests.Architecture/Luga.Tests.Architecture.csproj" />
+  </Folder>
+  <Folder Name="/tests/BuildingBlocks/">
+    <Project Path="../tests/BuildingBlocks/Luga.Tests.BuildingBlocks/Luga.Tests.BuildingBlocks.csproj" />
+  </Folder>
+</Solution>

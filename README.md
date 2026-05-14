@@ -101,7 +101,10 @@ Detalhes completos em [CLAUDE.md §5](./CLAUDE.md).
 
 ```powershell
 # Restaurar dependências
-dotnet restore
+dotnet restore src/Luga.CoreManager.slnx
+
+# Build
+dotnet build src/Luga.CoreManager.slnx
 
 # Subir tudo via Aspire (API + Blazor WASM + SQL Server)
 dotnet run --project src/AppHost/Luga.AppHost

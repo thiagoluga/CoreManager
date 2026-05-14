@@ -1,0 +1,23 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.3.0">
+
+  <!--
+    Luga.AppHost — orquestrador Aspire para dev local (ADR 040).
+    SQL Server + Server.Host + Client.Host. Dashboard em http://localhost:18888.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>luga-apphost</UserSecretsId>
+    <IsAspireHost>true</IsAspireHost>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Hosts\Luga.Server.Host\Luga.Server.Host.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\..\Hosts\Luga.Client.Host\Luga.Client.Host.csproj" IsAspireProjectResource="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.SqlServer" />
+  </ItemGroup>
+
+</Project>

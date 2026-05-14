@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BuildingBlocks.Application — orquestração de casos de uso.
+    Regra: depende de Domain + MediatR + FluentValidation.
+    NUNCA referencia Infrastructure.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Luga.BuildingBlocks.Domain\Luga.BuildingBlocks.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BuildingBlocks.Domain — núcleo puro.
+    Regra: NÃO depende de nada (sem EF, sem ASP.NET, sem MediatR).
+  -->
+
+</Project>

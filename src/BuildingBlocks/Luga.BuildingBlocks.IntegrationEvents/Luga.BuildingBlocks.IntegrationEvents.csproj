@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BuildingBlocks.IntegrationEvents — contratos de eventos cross-module.
+    Regra: dependência mínima em Domain.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\Luga.BuildingBlocks.Domain\Luga.BuildingBlocks.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
