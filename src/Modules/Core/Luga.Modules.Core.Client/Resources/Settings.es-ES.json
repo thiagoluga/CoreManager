@@ -1,0 +1,7 @@
+{
+  "pageTitle": "Tenant",
+  "tenantName": "Nombre",
+  "tenantSlug": "Slug",
+  "status": "Estado",
+  "defaultCulture": "Idioma por defecto"
+}

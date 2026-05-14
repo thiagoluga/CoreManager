@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Core.Server — backend of the Core module: Domain + Application + Infrastructure + Api combined.
+    Owns: Tenant, TenantUser, the "core" schema, claims enrichment endpoint.
+    Other modules consume Core via Luga.Modules.Core.Contracts (never via direct references).
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Server\Luga.BuildingBlocks.Server.csproj" />
+    <ProjectReference Include="..\Luga.Modules.Core.Contracts\Luga.Modules.Core.Contracts.csproj" />
+    <ProjectReference Include="..\Luga.Modules.Core.Shared\Luga.Modules.Core.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+    <PackageReference Include="Riok.Mapperly" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

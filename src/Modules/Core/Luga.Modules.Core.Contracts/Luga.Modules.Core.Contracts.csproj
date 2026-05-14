@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Core.Contracts — cross-module surface of the Core module.
+    Contains ITenantsService / IUsersService consumed by other modules
+    in-process, along with versioned integration events emitted by Core.
+    Dependency rule: this project ONLY depends on BuildingBlocks.IntegrationEvents.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.IntegrationEvents\Luga.BuildingBlocks.IntegrationEvents.csproj" />
+  </ItemGroup>
+
+</Project>

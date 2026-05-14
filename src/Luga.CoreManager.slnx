@@ -1,4 +1,12 @@
 <Solution>
+  <Folder Name="/BuildingBlocks/" />
+  <Folder Name="/Modules/" />
+  <Folder Name="/Modules/Core/">
+    <Project Path="Modules/Core/Luga.Modules.Core.Client/Luga.Modules.Core.Client.csproj" />
+    <Project Path="Modules/Core/Luga.Modules.Core.Contracts/Luga.Modules.Core.Contracts.csproj" />
+    <Project Path="Modules/Core/Luga.Modules.Core.Server/Luga.Modules.Core.Server.csproj" />
+    <Project Path="Modules/Core/Luga.Modules.Core.Shared/Luga.Modules.Core.Shared.csproj" />
+  </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/AppHost/">
     <Project Path="AppHost/Luga.AppHost/Luga.AppHost.csproj" />

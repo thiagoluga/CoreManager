@@ -1,21 +1,21 @@
+using Luga.BuildingBlocks.Domain.Events;
+
 namespace Luga.BuildingBlocks.IntegrationEvents;
 
 /// <summary>
-/// Evento público que atravessa fronteiras de módulo.
-/// Sempre versionado (sufixo <c>V1</c>, <c>V2</c>...) e propagado via Outbox.
+/// Public event that crosses module boundaries. Always versioned (suffix
+/// <c>V1</c>, <c>V2</c>...) and shipped through the outbox.
 /// </summary>
 /// <remarks>
-/// CLAUDE.md §3.1 / §3.4 (perigo 3): contratos estáveis.
-/// Breaking change exige nova versão coexistente (V2 ao lado de V1).
+/// Inherits <see cref="IDomainEvent"/> so it can be raised on an entity's
+/// <c>DomainEvents</c> collection alongside internal events. The
+/// <c>DomainEventToOutboxInterceptor</c> picks integration events out of that
+/// collection at <c>SaveChanges</c> time and enqueues them; the
+/// <c>DomainEventDispatcher</c> skips them so they are not re-dispatched
+/// in-process (CLAUDE.md §3.1 / §3.4 hazard 3).
 /// </remarks>
-public interface IIntegrationEvent
+public interface IIntegrationEvent : IDomainEvent
 {
-    /// <summary>Identificador único do evento. Persistido no Outbox e usado em idempotência.</summary>
-    Guid Id { get; }
-
-    /// <summary>Quando o evento ocorreu (UTC).</summary>
-    DateTime OccurredOn { get; }
-
-    /// <summary>Versão do contrato. Convenção: igual ao sufixo do nome da classe (V1, V2...).</summary>
+    /// <summary>Contract version. Convention: matches the class-name suffix (V1, V2...).</summary>
     int Version { get; }
 }

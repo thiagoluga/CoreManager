@@ -268,48 +268,47 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.7 Módulo Core (mínimo para autenticar)
 
-- [ ] (M) Criar 4 projetos Core (Server, Client, Shared, Contracts)
-- [ ] (M) Domain (Server):
-  - [ ] `Tenant.cs` (FullAuditableEntity, NÃO IMultiTenant)
-  - [ ] `TenantUser.cs` (TenantEntity, com PreferredCulture)
-  - [ ] `TenantStatus.cs` enum
-  - [ ] `TenantUserRole.cs` enum
-  - [ ] Domain events
-  - [ ] Errors
-- [ ] (M) Contracts:
-  - [ ] `ITenantsService.cs`
-  - [ ] `IUsersService.cs`
-  - [ ] DTOs (com batch methods desde dia 1)
-  - [ ] Integration events V1 (`TenantCreatedIntegrationEventV1`)
-- [ ] (M) Shared:
-  - [ ] DTOs HTTP
-  - [ ] `ICoreApi.cs` (Refit interface)
-  - [ ] Validators
-  - [ ] Resources JSON
-- [ ] (M) Application — features mínimas:
-  - [ ] `RegisterTenantCommand` + Handler + Validator
-  - [ ] `GetCurrentTenantQuery` + Handler
-  - [ ] `GetMyProfileQuery` + Handler
-  - [ ] Mappers (Mapperly)
-  - [ ] Repositórios (`ITenantRepository`, `ITenantUserRepository`)
-- [ ] (M) Infrastructure:
-  - [ ] `CoreDbContext` (extends LugaDbContextBase, schema "core")
-  - [ ] Configurations EF Core
-  - [ ] Repositórios concretos
-  - [ ] `TenantsService` (impl ITenantsService)
-  - [ ] `UsersService` (impl IUsersService)
-  - [ ] Migration inicial
-  - [ ] `CoreServerModule.cs` (composition root)
-  - [ ] `CoreModuleInitializer.cs` (seeds básicos)
-- [ ] (M) Api:
-  - [ ] `TenantsController`
-  - [ ] `UsersController`
-  - [ ] Custom claims provider endpoint (POST /api/auth/enrich-claims)
-- [ ] (M) Client:
-  - [ ] `CoreManifest.cs` (IModuleManifest)
-  - [ ] `CoreClientModule.cs`
-  - [ ] Pages básicas: profile, settings
-  - [ ] Resources JSON pt-BR (en-US e es-ES vazios/placeholder)
+- [x] (M) 4 Core projects created (Server, Client, Shared, Contracts) and added to slnx
+- [x] (M) Domain (Server):
+  - [x] `Tenant.cs` (`FullAuditableEntity`, NOT `IMultiTenant`) with `Register` factory that raises `TenantRegisteredDomainEvent` + `TenantCreatedIntegrationEventV1`
+  - [x] `TenantUser.cs` (`TenantEntity` with `PreferredCulture`, `Role`, factory + lifecycle methods)
+  - [x] `TenantStatus.cs` enum (`Active` / `Suspended` / `Cancelled`)
+  - [x] `TenantUserRole.cs` enum (`Owner` / `Admin` / `Manager` / `Operator` / `Viewer`)
+  - [x] Domain events (`TenantRegisteredDomainEvent`)
+  - [x] Errors (`CoreErrors`)
+- [x] (M) Contracts:
+  - [x] `ITenantsService.cs` + `IUsersService.cs` (with batch `GetByIdsAsync` from day 1)
+  - [x] DTOs: `TenantContractDto`, `TenantUserContractDto`
+  - [x] Integration events V1: `TenantCreatedIntegrationEventV1`, `TenantUserRegisteredIntegrationEventV1`
+- [x] (M) Shared:
+  - [x] HTTP DTOs: `TenantDto`, `TenantUserDto`, `RegisterTenantRequest`/`Response`, `EnrichClaimsRequest`/`Response`
+  - [x] `ICoreApi.cs` (Refit) — `RegisterTenant`, `GetCurrentTenant`, `GetMyProfile`
+  - [x] Validators: `RegisterTenantRequestValidator`
+- [x] (M) Application — minimal feature slice:
+  - [x] `RegisterTenantCommand` + handler + validator
+  - [x] `GetCurrentTenantQuery` + handler
+  - [x] `GetMyProfileQuery` + handler
+  - [x] Mappers (Mapperly with `RequiredMappingStrategy.Target`)
+  - [x] Repositories (`ITenantRepository`, `ITenantUserRepository` with batch + cross-tenant lookup for the claims provider)
+- [x] (M) Infrastructure:
+  - [x] `CoreDbContext` (extends `LugaDbContextBase`, default schema `core`, owns shared `core.idempotency_keys` and `core.module_initializations`)
+  - [x] EF Core configurations (unique tenant slug, unique `(TenantId, Username)` on tenant_users)
+  - [x] Repository implementations
+  - [x] Contract service implementations (`TenantsService`, `UsersService`)
+  - [ ] **Initial migration deferred** — run `dotnet ef migrations add Initial --project src/Modules/Core/Luga.Modules.Core.Server --startup-project src/Hosts/Luga.Server.Host --context CoreDbContext --output-dir Infrastructure/Persistence/Migrations` once §5.8 wires the host. CLAUDE.md §21 requires the generated migration to be reviewed before applying.
+  - [x] `CoreServerModule.cs` (composition root: DbContext + MediatR pipeline + validators + repositories + contract services + initializer)
+  - [x] `CoreModuleInitializer.cs` (v1, empty hook — seeds plan-catalog data when §6.2 lands)
+- [x] (M) Api:
+  - [x] `TenantsController` (`POST /register` anonymous, `GET /current` authorized)
+  - [x] `UsersController` (`GET /me` authorized)
+  - [x] `AuthController.EnrichClaims` (anonymous; stub returns user's tenant id + preferred culture)
+- [x] (M) Client:
+  - [x] `CoreManifest.cs` (menu: profile + settings; breadcrumbs declared)
+  - [x] `CoreClientModule.cs` (registers manifest + Refit `ICoreApi`)
+  - [x] Pages: `Profile.razor`, `Settings.razor` (read-only stubs hitting the API)
+  - [x] Resources JSON: `CoreManifest / Profile / Settings` × `{pt-BR, en-US, es-ES}` (pt-BR primary)
+
+> **Architectural change in this section:** `IIntegrationEvent` now derives from `IDomainEvent`, allowing integration events to be raised on the entity's `DomainEvents` collection. The `DomainEventToOutboxInterceptor` picks them up at `SaveChanges` time; the `DomainEventDispatcher` skips them so they're not re-dispatched in-process.
 
 ### 5.8 Bootstrapper (Luga.Server.Host)
 

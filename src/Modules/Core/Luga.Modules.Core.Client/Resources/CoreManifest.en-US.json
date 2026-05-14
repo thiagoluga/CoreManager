@@ -1,0 +1,7 @@
+{
+  "manifest.core.displayName": "Settings",
+  "manifest.core.menu.profile": "My profile",
+  "manifest.core.menu.settings": "Tenant",
+  "manifest.core.breadcrumb.profile": "My profile",
+  "manifest.core.breadcrumb.settings": "Tenant"
+}

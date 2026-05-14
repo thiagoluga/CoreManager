@@ -1,0 +1,48 @@
+@page "/profile"
+@inherits LugaPageBase
+@inject ICoreApi Api
+@inject IStringLocalizer<Profile> L
+
+<PageBreadcrumb Localizer="@L" />
+
+<MudText Typo="Typo.h4" Class="mb-4">@L["pageTitle"]</MudText>
+
+@if (_profile is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <MudPaper Class="pa-6" Elevation="1">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["displayName"]" Value="@_profile.DisplayName" ReadOnly="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["username"]" Value="@_profile.Username" ReadOnly="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["role"]" Value="@_profile.Role" ReadOnly="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["preferredCulture"]" Value="@_profile.PreferredCulture" ReadOnly="true" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+}
+
+@code {
+    private TenantUserDto? _profile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _profile = await Api.GetMyProfileAsync();
+        }
+        catch (Exception)
+        {
+            // Surface errors via a snackbar later; for the MVP just stay in the loading state.
+        }
+    }
+}

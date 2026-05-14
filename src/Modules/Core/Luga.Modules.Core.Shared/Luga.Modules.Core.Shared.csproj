@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Core.Shared — HTTP-layer DTOs, Refit interface and validators consumed
+    BOTH by Core.Server (deserialize requests, send responses) AND by
+    Core.Client (send Refit requests, receive responses). Zero code generation
+    and zero drift.
+  -->
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Refit" />
+  </ItemGroup>
+
+</Project>

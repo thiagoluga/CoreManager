@@ -1,0 +1,48 @@
+@page "/settings"
+@inherits LugaPageBase
+@inject ICoreApi Api
+@inject IStringLocalizer<Settings> L
+
+<PageBreadcrumb Localizer="@L" />
+
+<MudText Typo="Typo.h4" Class="mb-4">@L["pageTitle"]</MudText>
+
+@if (_tenant is null)
+{
+    <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+}
+else
+{
+    <MudPaper Class="pa-6" Elevation="1">
+        <MudGrid>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["tenantName"]" Value="@_tenant.Name" ReadOnly="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["tenantSlug"]" Value="@_tenant.Slug" ReadOnly="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["status"]" Value="@_tenant.Status" ReadOnly="true" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField Label="@L["defaultCulture"]" Value="@_tenant.DefaultCulture" ReadOnly="true" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+}
+
+@code {
+    private TenantDto? _tenant;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _tenant = await Api.GetCurrentTenantAsync();
+        }
+        catch (Exception)
+        {
+            // See Profile.razor for the snackbar placeholder.
+        }
+    }
+}
