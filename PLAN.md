@@ -312,20 +312,24 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.8 Bootstrapper (Luga.Server.Host)
 
-- [ ] (M) `Program.cs` com:
-  - [ ] BuildingBlocks setup
-  - [ ] Entra External ID auth
-  - [ ] Tenancy middleware
-  - [ ] Observability (Serilog + OpenTelemetry + correlation)
-  - [ ] MediatR + behaviors
-  - [ ] CoreServerModule
-  - [ ] Hangfire dashboard (`/jobs`)
-  - [ ] Health checks (`/health/live`, `/health/ready`)
-  - [ ] OpenAPI (Scalar UI)
-  - [ ] Serve Blazor WASM (static files + fallback)
-- [ ] (S) `appsettings.json` + `appsettings.Development.json`
-- [ ] (S) `Dockerfile`
-- [ ] (S) `.dockerignore`
+- [x] (M) `Program.cs` wired with:
+  - [x] BuildingBlocks setup (`AddLugaPersistence`)
+  - [x] Entra External ID auth (`AddLugaJwtBearer`)
+  - [x] Tenancy: `IHttpContextAccessor` + `HttpTenantContext` + `TenantContextMiddleware`
+  - [x] Auth resolver: `CurrentUserAccessor`
+  - [x] Observability: Serilog (`UseLugaSerilog`) + OpenTelemetry (`AddLugaOpenTelemetry`)
+  - [x] MediatR with module assemblies + 4 pipeline behaviors (Logging / Validation / Idempotency / Performance) registered **globally** (removed duplicate registration from `CoreServerModule`)
+  - [x] `AddCoreServerModule` + `AddApplicationPart(CoreServerModule.Assembly)` for MVC discovery
+  - [x] Hangfire dashboard (`AddLugaHangfire` + `MapLugaHangfireDashboard` at `/jobs`)
+  - [x] Health checks (`AddLugaHealthChecks` + `MapLugaHealthChecks` at `/health/live` and `/health/ready`)
+  - [x] OpenAPI (`AddOpenApi` + `MapScalarApiReference` in Development)
+  - [x] Idempotency middleware
+  - [x] Serve Blazor WASM (`UseBlazorFrameworkFiles` + `UseStaticFiles` + `MapFallbackToFile("index.html")`)
+- [x] (S) `appsettings.json` + `appsettings.Development.json` (ConnectionStrings, EntraExternalId, OpenTelemetry, Serilog overrides)
+- [x] (S) `Dockerfile` (multi-stage build from repo root context; publishes API + Blazor bundle on `aspnet:10.0`)
+- [x] (S) `.dockerignore`
+
+> **Note:** No initial EF migration generated yet — the host compiles and starts cleanly without it, but `dotnet ef migrations add Initial …` needs to run before the app actually hits SQL Server. CLAUDE.md §21 requires the migration to be reviewed before applying.
 
 ### 5.9 Luga.Client.Host (Blazor WASM bootstrap)
 

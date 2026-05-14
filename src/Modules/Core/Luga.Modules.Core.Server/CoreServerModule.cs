@@ -1,14 +1,13 @@
+using System.Reflection;
+
 using FluentValidation;
 
-using Luga.BuildingBlocks.Application.Behaviors;
 using Luga.BuildingBlocks.Server.Modules;
 using Luga.Modules.Core.Contracts;
 using Luga.Modules.Core.Server.Application.Repositories;
 using Luga.Modules.Core.Server.Infrastructure.Persistence;
 using Luga.Modules.Core.Server.Infrastructure.Repositories;
 using Luga.Modules.Core.Server.Infrastructure.Services;
-
-using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -23,7 +22,18 @@ namespace Luga.Modules.Core.Server;
 /// </summary>
 public static class CoreServerModule
 {
-    /// <summary>Registers Core module services and DbContext.</summary>
+    /// <summary>
+    /// Assembly that contains Core's MediatR handlers, FluentValidation validators
+    /// and controllers. Exposed so the host can include it in the global MediatR
+    /// registration plus the MVC <c>ApplicationPart</c> manager.
+    /// </summary>
+    public static Assembly Assembly => typeof(CoreServerModule).Assembly;
+
+    /// <summary>
+    /// Registers Core module services and DbContext. MediatR + pipeline behaviors
+    /// are registered globally by the host (with <see cref="Assembly"/> as one of
+    /// the source assemblies) so behaviors run once across every module.
+    /// </summary>
     public static IServiceCollection AddCoreServerModule(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -43,18 +53,8 @@ public static class CoreServerModule
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
         });
 
-        // MediatR for this module's handlers + pipeline behaviors registered globally by the host.
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(CoreServerModule).Assembly);
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(IdempotencyBehavior<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
-        });
-
-        // FluentValidation discovery for Core validators.
-        services.AddValidatorsFromAssembly(typeof(CoreServerModule).Assembly);
+        // FluentValidation discovery for Core validators (host registers MediatR globally).
+        services.AddValidatorsFromAssembly(Assembly);
 
         // Repositories
         services.AddScoped<ITenantRepository, TenantRepository>();
@@ -67,7 +67,6 @@ public static class CoreServerModule
         // Module initializer (versioned DML seeds — CLAUDE.md §7.11).
         services.AddSingleton<IModuleInitializer, CoreModuleInitializer>();
 
-        // Controllers are discovered by the host via AddApplicationPart in §5.8.
         return services;
     }
 }

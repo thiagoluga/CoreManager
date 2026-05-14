@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <!--
-    Luga.Server.Host — API + serve Blazor WASM estático.
-    Composition root do back. Referencia TODOS os módulos *.Server.
+    Luga.Server.Host — API + serves the Blazor WASM bundle.
+    Composition root of the back end. References every *.Server module assembly
+    so MediatR / MVC discover their handlers and controllers in one place.
   -->
 
   <PropertyGroup>
@@ -12,9 +13,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\Luga.BuildingBlocks.Server\Luga.BuildingBlocks.Server.csproj" />
+    <ProjectReference Include="..\..\Modules\Core\Luga.Modules.Core.Server\Luga.Modules.Core.Server.csproj" />
+    <!--
+      Referencing Client.Host pulls the published Blazor WASM output into wwwroot
+      via Microsoft.AspNetCore.Components.WebAssembly.Server (the host serves
+      the bundle and falls back to index.html for client routing).
+    -->
+    <ProjectReference Include="..\Luga.Client.Host\Luga.Client.Host.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Scalar.AspNetCore" />
   </ItemGroup>

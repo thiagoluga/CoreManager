@@ -1,0 +1,46 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# IDE / Tooling
+.vs/
+.vscode/
+.idea/
+
+# Tests & docs
+tests/
+docs/
+
+# CI
+.github/
+
+# Local secrets / user-specific
+**/*.user
+**/*.local.json
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+secrets/
+
+# Source control
+.git/
+.gitignore
+.gitattributes
+
+# AI assistant
+.claude/
+
+# Node (in case Tailwind tooling is added later)
+**/node_modules/
+
+# Coverage
+coverage/
+TestResults/
+[Tt]est[Rr]esults/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dockerfile itself (already in build context as build instruction)
+Dockerfile.*
