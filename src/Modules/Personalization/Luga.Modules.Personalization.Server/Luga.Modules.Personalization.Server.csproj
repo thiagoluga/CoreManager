@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Personalization.Server — minimal RBAC scaffolding for the MVP.
+    Full menu-overrides / page-visibility-overrides ship in V1.1 (CLAUDE.md §15).
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Application\Luga.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Domain\Luga.BuildingBlocks.Domain.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Luga.BuildingBlocks.Infrastructure\Luga.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\Luga.Modules.Personalization.Contracts\Luga.Modules.Personalization.Contracts.csproj" />
+    <ProjectReference Include="..\Luga.Modules.Personalization.Shared\Luga.Modules.Personalization.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  </ItemGroup>
+
+</Project>

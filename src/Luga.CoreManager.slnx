@@ -13,6 +13,12 @@
     <Project Path="Modules/Marketing/Luga.Modules.Marketing.Server/Luga.Modules.Marketing.Server.csproj" />
     <Project Path="Modules/Marketing/Luga.Modules.Marketing.Shared/Luga.Modules.Marketing.Shared.csproj" />
   </Folder>
+  <Folder Name="/Modules/Personalization/">
+    <Project Path="Modules/Personalization/Luga.Modules.Personalization.Client/Luga.Modules.Personalization.Client.csproj" />
+    <Project Path="Modules/Personalization/Luga.Modules.Personalization.Contracts/Luga.Modules.Personalization.Contracts.csproj" />
+    <Project Path="Modules/Personalization/Luga.Modules.Personalization.Server/Luga.Modules.Personalization.Server.csproj" />
+    <Project Path="Modules/Personalization/Luga.Modules.Personalization.Shared/Luga.Modules.Personalization.Shared.csproj" />
+  </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/AppHost/">
     <Project Path="AppHost/Luga.AppHost/Luga.AppHost.csproj" />

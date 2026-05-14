@@ -505,35 +505,15 @@ When V1.1 reopens this section the pieces needed are:
 
 ### 6.4 Módulo Personalization (gestão de menu + RBAC)
 
-- [ ] (M) Criar 4 projetos Personalization
-- [ ] (M) Domain:
-  - [ ] `Role.cs` (TenantEntity)
-  - [ ] `Permission.cs` (constante string, não entity)
-  - [ ] `RolePermission.cs` (TenantEntity)
-  - [ ] `UserRole.cs` (TenantEntity)
-  - [ ] `MenuOverride.cs` (TenantEntity)
-  - [ ] `PageVisibilityOverride.cs` (TenantEntity)
-- [ ] (M) Application features:
-  - [ ] CRUD de Roles
-  - [ ] Assign roles to users
-  - [ ] Permission check
-  - [ ] Menu override CRUD
-- [ ] (M) Infrastructure:
-  - [ ] PersonalizationDbContext (schema "personalization")
-  - [ ] Repositórios
-  - [ ] Migration inicial
-  - [ ] Initializer com roles default (Admin, Manager, Operator, Viewer)
-- [ ] (M) Api Controllers
-- [ ] (L) Client:
-  - [ ] `RolesAdmin.razor` (CRUD roles)
-  - [ ] `UsersAdmin.razor` (lista users do tenant, assign roles)
-  - [ ] `PermissionsMatrix.razor` (matriz role × permission)
-  - [ ] `MenuOverridesAdmin.razor` (override de labels, ordem, plans)
-  - [ ] Manifest
-- [ ] (M) Behaviors:
-  - [ ] `PermissionService` que lê role assignments + retorna permissions
-  - [ ] Cascading parameter em LugaPageBase
-  - [ ] `[Authorize(Permission = "...")]` attribute custom
+- [x] (M) 4 projects scaffolded (Server, Client, Shared, Contracts)
+- [x] (S) `Permissions` static class in `Personalization.Contracts` with the canonical permission codes (Customers/Payments/Personalization/Jobs)
+- [x] (M) `PersonalizationDbContext` (schema `personalization`) — empty model in the MVP
+- [x] (M) `PersonalizationServerModule.AddPersonalizationServerModule` registered in `Server.Host`
+- [x] (M) `PersonalizationManifest` (subscription-gated by `personalization` module code) + `PersonalizationClientModule.AddPersonalizationClientModule` registered in `Client.Host`
+- [ ] Domain entities + RBAC tables (`Role`, `RolePermission`, `UserRole`, `MenuOverride`, `PageVisibilityOverride`) — **deferred to V1.1**. The MVP relies on a single static role per user encoded in the JWT and `IPermissionService` populated from the `permissions` claim (already wired in §5.6).
+- [ ] Admin CRUD pages (RolesAdmin, UsersAdmin, PermissionsMatrix, MenuOverridesAdmin) — **deferred to V1.1**.
+- [x] `PermissionService` reading from the `permissions` claim (BuildingBlocks.Client) — already in place since §5.6.
+- [x] Cascading parameter in `LugaPageBase` — already in place since §5.6.
 
 ### 6.5 Core: Páginas admin essenciais
 
