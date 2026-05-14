@@ -16,42 +16,51 @@ namespace Luga.BuildingBlocks.Client.Navigation;
 /// </remarks>
 public sealed partial class BreadcrumbResolver : IBreadcrumbResolver
 {
-    private readonly IReadOnlyList<BreadcrumbRoute> _routes;
+    private readonly IReadOnlyList<RouteEntry> _routes;
 
     public BreadcrumbResolver(IEnumerable<IModuleManifest> manifests)
     {
         ArgumentNullException.ThrowIfNull(manifests);
-        _routes = [.. manifests.SelectMany(m => m.BreadcrumbRoutes).Where(r => r.IsEnabled)];
+        _routes =
+        [
+            .. manifests.SelectMany(m => m.BreadcrumbRoutes.Where(r => r.IsEnabled).Select(r => new RouteEntry(m, r))),
+        ];
     }
 
     /// <inheritdoc/>
-    public IReadOnlyList<BreadcrumbSegment> Resolve(string currentRoute, string? dynamicLeafLabel)
+    public IReadOnlyList<BreadcrumbSegment> Resolve(string currentRoute, string? dynamicLeafLabel) =>
+        ResolveMatch(currentRoute, dynamicLeafLabel)?.Segments ?? [];
+
+    /// <inheritdoc/>
+    public BreadcrumbMatch? ResolveMatch(string currentRoute, string? dynamicLeafLabel)
     {
         ArgumentException.ThrowIfNullOrEmpty(currentRoute);
 
-        BreadcrumbRoute? match = _routes.FirstOrDefault(r => RouteMatches(r.RoutePattern, currentRoute));
+        RouteEntry? match = _routes.FirstOrDefault(e => RouteMatches(e.Route.RoutePattern, currentRoute));
         if (match is null)
         {
-            return [];
+            return null;
         }
 
-        if (string.IsNullOrWhiteSpace(dynamicLeafLabel))
-        {
-            return match.Segments;
-        }
+        IReadOnlyList<BreadcrumbSegment> segments = match.Route.Segments;
 
-        // Replace the label key of the last Dynamic segment (if any) with the supplied label.
-        List<BreadcrumbSegment> segments = [.. match.Segments];
-        for (int i = segments.Count - 1; i >= 0; i--)
+        if (!string.IsNullOrWhiteSpace(dynamicLeafLabel))
         {
-            if (segments[i].Source == BreadcrumbSegmentSource.Dynamic)
+            // Replace the label key of the last Dynamic segment (if any) with the supplied label.
+            List<BreadcrumbSegment> mutable = [.. segments];
+            for (int i = mutable.Count - 1; i >= 0; i--)
             {
-                segments[i] = segments[i] with { LabelKey = dynamicLeafLabel };
-                break;
+                if (mutable[i].Source == BreadcrumbSegmentSource.Dynamic)
+                {
+                    mutable[i] = mutable[i] with { LabelKey = dynamicLeafLabel };
+                    break;
+                }
             }
+
+            segments = mutable;
         }
 
-        return segments;
+        return new BreadcrumbMatch(segments, match.Manifest);
     }
 
     private static bool RouteMatches(string pattern, string currentRoute)
@@ -88,4 +97,6 @@ public sealed partial class BreadcrumbResolver : IBreadcrumbResolver
 
     [GeneratedRegex(@"\{[^}]+\}", RegexOptions.CultureInvariant)]
     private static partial Regex ParameterPattern();
+
+    private sealed record RouteEntry(IModuleManifest Manifest, BreadcrumbRoute Route);
 }

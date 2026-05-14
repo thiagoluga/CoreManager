@@ -48,7 +48,11 @@ public sealed class DomainEventToOutboxInterceptor : SaveChangesInterceptor
 
         DbSet<OutboxMessage> outbox = context.Set<OutboxMessage>();
 
-        foreach (EntityEntry<IHasDomainEvents> entry in context.ChangeTracker.Entries<IHasDomainEvents>())
+        // Materialize first: `outbox.Add` mutates the change-tracker dictionary,
+        // which invalidates the live `Entries<IHasDomainEvents>()` enumerator.
+        List<EntityEntry<IHasDomainEvents>> entries = [.. context.ChangeTracker.Entries<IHasDomainEvents>()];
+
+        foreach (EntityEntry<IHasDomainEvents> entry in entries)
         {
             IReadOnlyCollection<IDomainEvent> events = entry.Entity.DomainEvents;
             if (events.Count == 0)

@@ -1,6 +1,7 @@
 using Luga.BuildingBlocks.Client.Manifests;
 using Luga.Modules.Core.Shared.Refit;
 
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 using Refit;
@@ -21,7 +22,11 @@ public static class CoreClientModule
         services.AddSingleton<IModuleManifest, CoreManifest>();
 
         services.AddRefitClient<ICoreApi>()
-            .ConfigureHttpClient(client => client.BaseAddress = new Uri("/", UriKind.Relative));
+            .ConfigureHttpClient((sp, client) =>
+            {
+                NavigationManager nav = sp.GetRequiredService<NavigationManager>();
+                client.BaseAddress = new Uri(nav.BaseUri);
+            });
 
         return services;
     }

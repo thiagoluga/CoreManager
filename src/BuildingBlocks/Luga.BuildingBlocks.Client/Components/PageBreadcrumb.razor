@@ -1,7 +1,9 @@
+@using Luga.BuildingBlocks.Client.Localization
 @using Luga.BuildingBlocks.Client.Manifests
 @using Luga.BuildingBlocks.Client.Navigation
 @using Microsoft.AspNetCore.Components.Routing
 @inject IBreadcrumbResolver Resolver
+@inject IStringLocalizerFactory LocalizerFactory
 @inject NavigationManager Navigation
 @implements IDisposable
 
@@ -11,24 +13,32 @@
     of the last dynamic segment (e.g. "Cliente João Silva").
 
         <PageBreadcrumb DynamicLeaf="@customer?.Name" />
+
+    Label keys are resolved through a composite localizer that tries (in order):
+      1. The page-supplied <c>Localizer</c> (per-page keys / dynamic labels)
+      2. The matched manifest's own resource bundle (<c>manifest.*</c> keys)
+      3. <see cref="SharedStrings"/> (<c>common.*</c> keys)
 *@
 
-<Breadcrumb Segments="_segments" Localizer="@Localizer" Class="@Class" />
+<Breadcrumb Segments="_segments" Localizer="@_compositeLocalizer" Class="@Class" />
 
 @code {
     /// <summary>Label for the trailing dynamic segment, when present.</summary>
     [Parameter] public string? DynamicLeaf { get; set; }
 
-    /// <summary>Localizer for the segment keys. Pages typically pass <c>@L</c> here.</summary>
+    /// <summary>Optional extra localizer (typically the page's <c>@L</c>).</summary>
     [Parameter] public IStringLocalizer? Localizer { get; set; }
 
     /// <summary>Optional CSS classes forwarded to <c>MudBreadcrumbs</c>.</summary>
     [Parameter] public string Class { get; set; } = string.Empty;
 
     private IReadOnlyList<BreadcrumbSegment> _segments = [];
+    private IStringLocalizer? _compositeLocalizer;
+    private IStringLocalizer? _sharedLocalizer;
 
     protected override void OnInitialized()
     {
+        _sharedLocalizer = LocalizerFactory.Create(typeof(SharedStrings));
         Navigation.LocationChanged += OnLocationChanged;
         Recompute();
     }
@@ -55,7 +65,13 @@
             path = "/" + path;
         }
 
-        _segments = Resolver.Resolve(path, DynamicLeaf);
+        BreadcrumbMatch? match = Resolver.ResolveMatch(path, DynamicLeaf);
+        _segments = match?.Segments ?? [];
+
+        IStringLocalizer? manifestLocalizer =
+            match is null ? null : LocalizerFactory.Create(match.Manifest.GetType());
+
+        _compositeLocalizer = new ChainedStringLocalizer(Localizer, manifestLocalizer, _sharedLocalizer);
     }
 
     public void Dispose() => Navigation.LocationChanged -= OnLocationChanged;

@@ -19,4 +19,16 @@ public interface IBreadcrumbResolver
     /// segment. <c>null</c> means use the static template.
     /// </param>
     IReadOnlyList<BreadcrumbSegment> Resolve(string currentRoute, string? dynamicLeafLabel);
+
+    /// <summary>
+    /// Like <see cref="Resolve"/> but also returns the manifest that owns the
+    /// matched route. PageBreadcrumb uses the manifest's type to localize
+    /// <c>manifest.*</c> label keys against the right resource file.
+    /// </summary>
+    BreadcrumbMatch? ResolveMatch(string currentRoute, string? dynamicLeafLabel);
 }
+
+/// <summary>Pair of segments + the manifest whose route matched.</summary>
+public sealed record BreadcrumbMatch(
+    IReadOnlyList<BreadcrumbSegment> Segments,
+    IModuleManifest Manifest);
