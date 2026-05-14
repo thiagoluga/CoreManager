@@ -11,6 +11,11 @@
     (CLAUDE.md §8.1). New modules add their assembly type here.
 *@
 
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly"
             AdditionalAssemblies="@_moduleAssemblies">
