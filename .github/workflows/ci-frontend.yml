@@ -1,0 +1,66 @@
+name: ci-frontend
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'src/BuildingBlocks/Luga.BuildingBlocks.Client/**'
+      - 'src/Hosts/Luga.Client.Host/**'
+      - 'src/Modules/**/*.Client/**'
+      - 'src/Modules/**/*.Shared/**'
+      - 'src/Luga.CoreManager.slnx'
+      - 'Directory.Build.props'
+      - 'Directory.Build.targets'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - '.github/workflows/ci-frontend.yml'
+  pull_request:
+    paths:
+      - 'src/BuildingBlocks/Luga.BuildingBlocks.Client/**'
+      - 'src/Hosts/Luga.Client.Host/**'
+      - 'src/Modules/**/*.Client/**'
+      - 'src/Modules/**/*.Shared/**'
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install workloads
+        run: dotnet workload install wasm-tools
+
+      - name: Restore
+        run: dotnet restore src/Hosts/Luga.Client.Host/Luga.Client.Host.csproj
+
+      - name: Build Blazor WASM (Release)
+        run: dotnet build src/Hosts/Luga.Client.Host/Luga.Client.Host.csproj --configuration Release --no-restore
+
+      - name: Publish bundle (smoke check)
+        run: dotnet publish src/Hosts/Luga.Client.Host/Luga.Client.Host.csproj --configuration Release --no-build --output artifacts/client
+
+      - name: Upload published bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-wasm-bundle
+          path: artifacts/client
+          retention-days: 7
+
+  # TODO (§5.11 follow-up): bUnit component tests and Playwright E2E (login
+  # smoke). bUnit tests run via `dotnet test` once written; Playwright needs a
+  # dedicated job with the browsers cached.

@@ -1,0 +1,49 @@
+name: ci-infra
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/ci-infra.yml'
+  pull_request:
+    paths:
+      - 'infra/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  bicep-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bicep
+        run: az bicep install
+
+      - name: Bicep build (lint syntax)
+        run: az bicep build --file infra/main.bicep
+
+      # The what-if step requires Azure OIDC trust to be configured (CLAUDE.md §5.13).
+      # Once the secrets are populated in the repo settings, uncomment below.
+      #
+      # - name: Login to Azure (OIDC)
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      #
+      # - name: What-if staging
+      #   run: |
+      #     az deployment sub what-if \
+      #       --location brazilsouth \
+      #       --template-file infra/main.bicep \
+      #       --parameters infra/parameters/staging.bicepparam \
+      #       --parameters sqlAdministratorLogin=${{ secrets.SQL_ADMIN_LOGIN }} \
+      #                    sqlAdministratorPassword=${{ secrets.SQL_ADMIN_PASSWORD }} \
+      #                    entraTenantId=${{ secrets.AZURE_TENANT_ID }}

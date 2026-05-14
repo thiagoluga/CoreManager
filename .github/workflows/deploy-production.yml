@@ -1,0 +1,52 @@
+name: deploy-production
+
+# Production deployments are manual: a workflow_dispatch with the image tag the
+# operator wants to promote. Migrations run first; the Container App rolls only
+# after the gated environment review (CLAUDE.md §5.13).
+
+on:
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: 'Tag (sha- or version) of an image already pushed to GHCR.'
+        type: string
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/coremanager/api
+
+jobs:
+  migrations:
+    uses: ./.github/workflows/deploy-migrations.yml
+    with:
+      environment: production
+      connection-string-secret: ConnectionStrings-Default
+    secrets: inherit
+
+  deploy:
+    needs: migrations
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Azure (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Roll Container App revision
+        run: |
+          az containerapp update \
+            --name luga-production-api \
+            --resource-group luga-production-rg \
+            --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.image-tag }}

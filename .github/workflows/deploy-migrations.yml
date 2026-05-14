@@ -1,0 +1,114 @@
+name: deploy-migrations
+
+# Generates idempotent SQL scripts per module's DbContext, uploads them as
+# artifacts for human review, then applies them via sqlcmd against the target
+# database. Always runs BEFORE the app deploys (CLAUDE.md §7.9).
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Target environment (staging|production).'
+        type: string
+        required: true
+      connection-string-secret:
+        description: 'Secret name carrying the sqlcmd connection string.'
+        type: string
+        required: true
+    secrets:
+      AZURE_CLIENT_ID:
+        required: true
+      AZURE_TENANT_ID:
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        required: true
+      KEYVAULT_NAME:
+        required: true
+
+  # Allow ad-hoc runs.
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        type: choice
+        options: [staging, production]
+        required: true
+        default: staging
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_NOLOGO: 'true'
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install EF Core tooling
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Restore
+        run: dotnet restore src/Luga.CoreManager.slnx
+
+      # One script per module DbContext. Add new --context entries as modules grow.
+      - name: Generate Core idempotent script
+        run: |
+          mkdir -p artifacts/migrations
+          dotnet ef migrations script \
+            --idempotent \
+            --project src/Modules/Core/Luga.Modules.Core.Server \
+            --startup-project src/Hosts/Luga.Server.Host \
+            --context CoreDbContext \
+            --output artifacts/migrations/core.sql
+
+      - name: Upload SQL artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: migrations-${{ inputs.environment }}
+          path: artifacts/migrations/
+          retention-days: 90
+
+      - name: Login to Azure (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Resolve SQL connection string from Key Vault
+        id: kv
+        run: |
+          CONN=$(az keyvault secret show \
+            --name ${{ inputs.connection-string-secret }} \
+            --vault-name ${{ secrets.KEYVAULT_NAME }} \
+            --query value -o tsv)
+          echo "::add-mask::$CONN"
+          echo "conn=$CONN" >> "$GITHUB_OUTPUT"
+
+      - name: Install sqlcmd
+        run: |
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 unixodbc-dev
+          echo "/opt/mssql-tools18/bin" >> "$GITHUB_PATH"
+
+      - name: Apply migrations
+        run: sqlcmd -S "$SERVER" -d "$DATABASE" -i artifacts/migrations/core.sql -N -C
+        env:
+          # The connection string follows ADO.NET; split it for sqlcmd flags.
+          SERVER: ${{ steps.kv.outputs.conn }}
+          DATABASE: ${{ inputs.environment == 'production' && 'luga-production-db' || 'luga-staging-db' }}

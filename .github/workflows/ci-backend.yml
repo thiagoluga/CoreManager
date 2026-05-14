@@ -1,0 +1,67 @@
+name: ci-backend
+
+on:
+  push:
+    branches: [master, main]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'PLAN.md'
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CLAUDE.md'
+      - 'PLAN.md'
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Aspire templates
+        run: dotnet new install Aspire.ProjectTemplates
+
+      - name: Restore
+        run: dotnet restore src/Luga.CoreManager.slnx
+
+      - name: Verify code formatting
+        run: dotnet format src/Luga.CoreManager.slnx --no-restore --verify-no-changes --severity error
+
+      - name: Build (Release)
+        run: dotnet build src/Luga.CoreManager.slnx --configuration Release --no-restore
+
+      - name: Unit tests — BuildingBlocks
+        run: dotnet test tests/BuildingBlocks/Luga.Tests.BuildingBlocks/Luga.Tests.BuildingBlocks.csproj --no-build --configuration Release --logger 'trx;LogFileName=building-blocks.trx'
+
+      - name: Architecture tests
+        run: dotnet test tests/Architecture/Luga.Tests.Architecture/Luga.Tests.Architecture.csproj --no-build --configuration Release --logger 'trx;LogFileName=architecture.trx'
+
+      - name: Integration tests (Testcontainers)
+        run: dotnet test tests/Integration/Luga.Tests.Integration/Luga.Tests.Integration.csproj --no-build --configuration Release --logger 'trx;LogFileName=integration.trx'
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-backend
+          path: '**/TestResults/*.trx'
+          retention-days: 14

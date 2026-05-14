@@ -401,28 +401,14 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.13 CI/CD
 
-- [ ] (M) `.github/workflows/ci-backend.yml`:
-  - [ ] dotnet restore, build, test (unit + integration Testcontainers)
-  - [ ] Architecture tests
-  - [ ] dotnet format --verify-no-changes
-- [ ] (M) `.github/workflows/ci-frontend.yml`:
-  - [ ] bUnit tests
-  - [ ] Playwright smoke (login)
-  - [ ] build Blazor WASM
-- [ ] (M) `.github/workflows/ci-infra.yml`:
-  - [ ] az deployment what-if
-- [ ] (M) `.github/workflows/deploy-migrations.yml`:
-  - [ ] Gera scripts SQL idempotent por módulo
-  - [ ] Arquiva como artifact
-  - [ ] Aplica via sqlcmd em staging/prod
-- [ ] (M) `.github/workflows/deploy-staging.yml`:
-  - [ ] Push em main: build Docker, push GHCR, deploy Container App
-  - [ ] Migrations rodam ANTES do deploy da app
-- [ ] (M) `.github/workflows/deploy-production.yml`:
-  - [ ] workflow_dispatch com input de versão
-  - [ ] Deploy manual com aprovação
-- [ ] (M) Configurar OIDC entre GitHub Actions e Azure
-- [ ] (S) Documentar deploy no README
+- [x] (M) `.github/workflows/ci-backend.yml`: restore → `dotnet format --verify-no-changes` → build Release → unit (BuildingBlocks) + Architecture + Integration tests (Testcontainers) → upload `.trx` artifacts
+- [x] (M) `.github/workflows/ci-frontend.yml`: builds + publishes the Blazor WASM bundle. bUnit + Playwright slots flagged as TODO (no tests written yet)
+- [x] (M) `.github/workflows/ci-infra.yml`: `az bicep build` lint; OIDC-gated `what-if` block commented out until secrets land in repo settings
+- [x] (M) `.github/workflows/deploy-migrations.yml`: reusable workflow that emits idempotent SQL per `DbContext`, uploads as 90-day artifact, then applies via `sqlcmd` over the Key Vault-resolved connection string
+- [x] (M) `.github/workflows/deploy-staging.yml`: on push to master/main → builds the Docker image (multi-stage from repo root context), pushes to GHCR with `sha-<short>` + `latest`, calls `deploy-migrations.yml`, rolls the staging Container App revision
+- [x] (M) `.github/workflows/deploy-production.yml`: `workflow_dispatch` taking an image tag input, gates on the `production` GitHub environment (manual approval), runs migrations, then rolls the prod Container App
+- [ ] (M) Configure GitHub ↔ Azure OIDC federation — **pending user action**: register the federated identity in Entra ID and populate repo secrets `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `KEYVAULT_NAME`, `SQL_ADMIN_LOGIN`, `SQL_ADMIN_PASSWORD`
+- [x] (S) `infra/README.md` documents the manual `az deployment sub create` path; staging is automatic once OIDC is wired
 
 ### 5.14 Scripts auxiliares
 
