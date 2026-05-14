@@ -384,17 +384,20 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.12 Infra: Bicep
 
-- [ ] (L) `infra/main.bicep` orquestrador
-- [ ] (M) Modules:
-  - [ ] `containerapp.bicep`
-  - [ ] `sqldatabase.bicep` (Serverless)
-  - [ ] `keyvault.bicep`
-  - [ ] `storage.bicep`
-  - [ ] `appinsights.bicep`
-- [ ] (S) `parameters/staging.bicepparam`
-- [ ] (S) `parameters/production.bicepparam`
-- [ ] (M) Deploy manual inicial (RG, recursos base)
-- [ ] (M) Configurar Managed Identity para Container App acessar Key Vault e SQL
+- [x] (L) `infra/main.bicep` orchestrator (subscription-scope deployment, tags every resource, threads outputs through dependent modules)
+- [x] (M) Modules:
+  - [x] `appinsights.bicep` (Log Analytics + Application Insights, workspace-based ingestion)
+  - [x] `sqldatabase.bicep` (Serverless GP_S_Gen5, autoPauseDelay 60min staging / -1 production, Entra-default auth connection string)
+  - [x] `keyvault.bicep` (RBAC mode, soft-delete + purge protection in production)
+  - [x] `storage.bicep` (StandardLRS, `documents` container, 7-day soft delete)
+  - [x] `containerapp.bicep` (User-assigned MI, scale-to-zero in staging / minReplicas=1 in production, `/health/live` + `/health/ready` probes, env vars wired to Key Vault & SQL secrets)
+- [x] (S) `parameters/staging.bicepparam`
+- [x] (S) `parameters/production.bicepparam`
+- [x] (S) `infra/README.md` with deploy command + post-deploy MI grant SQL/Key Vault checklist
+- [ ] (M) Manual initial deploy (resource group + base resources) — **pending user action** (requires Azure subscription, `az login`, real Entra tenant id)
+- [ ] (M) Grant Managed Identity access to Key Vault (`Key Vault Secrets User`) and SQL (`CREATE USER FROM EXTERNAL PROVIDER`) — **runbook in `infra/README.md`**, pending first deploy
+
+> Bicep was not validated locally (no `az` / `bicep` CLI in this environment). Syntax is exercised by the `ci-infra.yml` workflow in §5.13.
 
 ### 5.13 CI/CD
 
