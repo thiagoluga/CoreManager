@@ -30,4 +30,7 @@
   <Folder Name="/tests/BuildingBlocks/">
     <Project Path="../tests/BuildingBlocks/Luga.Tests.BuildingBlocks/Luga.Tests.BuildingBlocks.csproj" />
   </Folder>
+  <Folder Name="/tests/Integration/">
+    <Project Path="../tests/Integration/Luga.Tests.Integration/Luga.Tests.Integration.csproj" />
+  </Folder>
 </Solution>

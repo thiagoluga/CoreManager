@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Regras arquiteturais (ArchUnitNET) — valida fronteiras entre módulos,
-    convenções de naming e regra de i18n (sem strings literais em Razor).
-    Detalhes em §5.11.
+    Integration tests. Spin up SQL Server via Testcontainers and exercise the
+    API through WebApplicationFactory. Requires Docker; CI runs them on the
+    GitHub Actions Ubuntu runner where Docker is available out of the box.
   -->
 
   <PropertyGroup>
@@ -12,20 +12,19 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Application\Luga.BuildingBlocks.Application.csproj" />
-    <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Client\Luga.BuildingBlocks.Client.csproj" />
     <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Domain\Luga.BuildingBlocks.Domain.csproj" />
     <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Infrastructure\Luga.BuildingBlocks.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.IntegrationEvents\Luga.BuildingBlocks.IntegrationEvents.csproj" />
-    <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Server\Luga.BuildingBlocks.Server.csproj" />
-    <ProjectReference Include="..\..\..\src\Modules\Core\Luga.Modules.Core.Server\Luga.Modules.Core.Server.csproj" />
-    <ProjectReference Include="..\..\..\src\Modules\Core\Luga.Modules.Core.Contracts\Luga.Modules.Core.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\src\Hosts\Luga.Server.Host\Luga.Server.Host.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TngTech.ArchUnitNET.xUnit" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Testcontainers" />
+    <PackageReference Include="Testcontainers.MsSql" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>

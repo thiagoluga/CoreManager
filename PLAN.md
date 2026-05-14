@@ -362,20 +362,25 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.11 Testes
 
-- [ ] (M) `Luga.Tests.Architecture`:
-  - [ ] ArchUnitNET para regras de dependência
-  - [ ] Domain não depende de EF Core
-  - [ ] Módulos não referenciam internals de outros módulos
-  - [ ] Application não depende de Infrastructure
-  - [ ] Contracts não depende de Domain de outros módulos
-  - [ ] Naming conventions (Handler, Command, Query suffixes)
-  - [ ] Integration Events sempre com sufixo V{N}
-  - [ ] Strings literais em Razor → falha (i18n)
-- [ ] (M) Test base classes:
-  - [ ] `IntegrationTestBase` com Testcontainers (SQL Server)
-  - [ ] `WebApplicationFactoryFixture` customizada
-  - [ ] FakeTimeProvider helper
-- [ ] (S) Smoke test: POST /api/tenants/register cria tenant e retorna 201
+- [x] (M) `Luga.Tests.Architecture` (ArchUnitNET, 11 tests):
+  - [x] Domain has no Microsoft.EntityFrameworkCore dependency
+  - [x] Domain has no MediatR dependency
+  - [x] Application does not depend on Infrastructure
+  - [x] Application has no EF Core / AspNetCore.Mvc dependencies
+  - [x] Infrastructure does not depend on Server.Host
+  - [x] Client does not depend on Infrastructure
+  - [x] IntegrationEvents stays at the bottom (no Application/Infra/Server/Client refs)
+  - [x] CoreContracts does not depend on CoreServer
+  - [x] Naming: every `IIntegrationEvent` ends in `V{N}` (regex enforced)
+  - [x] Naming: every MediatR `IRequestHandler` ends in `Handler`
+  - [ ] (V2+) Razor literal strings → fail (i18n) — requires a Roslyn source generator scan, deferred
+- [x] (M) Integration test scaffolding (`tests/Integration/Luga.Tests.Integration`):
+  - [x] `SqlServerFixture` + `SqlServerCollection` (Testcontainers MsSql, shared container per collection)
+  - [x] `LugaWebApplicationFactory` wiring `WebApplicationFactory<Program>` with in-memory connection strings + `Testing` environment
+  - [x] `IntegrationTestBase` base class
+  - [ ] `FakeTimeProvider` helper — defer until first handler test that needs it
+- [x] (S) `HealthChecksSmokeTests.Liveness_ReturnsOk` proves the host boots end-to-end against the throwaway SQL container
+- [ ] `POST /api/tenants/register` smoke test — deferred until §6 wires the controller
 
 ### 5.12 Infra: Bicep
 
