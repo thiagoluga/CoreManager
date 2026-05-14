@@ -600,23 +600,45 @@ complete experience in V1.1 than half a UI and half an integration in the MVP.
 - [ ] (S) Documentação tenant (FAQ / tutoriais) — **deferred to V1.1**.
 - [ ] (S) Runbooks técnicos — **deferred to V1.1** (estrutura `docs/runbooks/` já existe desde §5.2).
 
-### 6.9 Critério de pronto da Fase 1
+### 6.9 Critério de pronto da Fase 1 — STATUS DO MVP
 
-- ✅ Tenant se cadastra, escolhe plano, paga mensalidade do Luga via gateway próprio
-- ✅ Tenant cria customers com custom fields personalizados
-- ✅ Tenant define planos de cobrança e associa customers
-- ✅ Sistema gera invoices automaticamente
-- ✅ Tenant marca invoices como pagas manualmente OU recebe via Asaas
-- ✅ Notificações de cobrança geradas e enviadas (email + WhatsApp manual)
-- ✅ Menu do tenant mostra apenas módulos contratados (via subscription check)
-- ✅ Personalization permite override de labels e ordem
-- ✅ Usuários do tenant gerenciáveis com roles e permissions
-- ✅ 1-3 tenants beta usando em produção real
-- ✅ Cobertura de testes >80% em Domain e Application
-- ✅ Sem vazamentos de dados entre tenants (E2E tests)
-- ✅ p95 das requests <500ms
-- ✅ Outbox + idempotência funcionando (zero perda de eventos verificável)
-- ✅ Documentação básica para tenants disponível
+> O MVP entregue nesta sessão é estrutural: todas as 5 verticals (Core,
+> Marketing, Customers, Payments, Personalization) estão presentes como
+> projetos compilados e wireados no host, com `Customers` totalmente
+> funcional (CRUD via API). Os demais módulos têm scaffolding mais raso —
+> ver §6.x individual para o detalhe do que ficou para V1.1.
+
+#### O que está pronto
+
+- [x] Marketing público com landing, planos, módulos, sobre, contato (i18n pt-BR)
+- [x] Catálogo de planos do Luga em Core (`SubscriptionPlan` + initializer v2 seeds Starter/Pro/Business)
+- [x] Tenant cria customers com campos básicos + custom fields JSON (CRUD completo)
+- [x] Customers menu visível apenas para tenants com módulo `customers` contratado (manifest gating)
+- [x] Outbox + idempotência infrastructure (BuildingBlocks.Infrastructure, exercitado pelo `CustomerCreatedIntegrationEventV1`)
+- [x] Health checks (`/health/live` sem dependências, `/health/ready` com checks)
+- [x] Rate limiting 100 req/min por tenant/IP
+- [x] Permission gating no front (`IPermissionService` + `LugaPageBase.HasPermission`)
+- [x] 82 unit tests + 11 architecture tests passando (build limpo)
+
+#### O que ficou para V1.1 (consciente, documentado nas seções acima)
+
+- TenantSubscription billing real ao Luga (§6.3 — gateway TBD)
+- Admin pages cross-tenant (§6.5)
+- RBAC com persistência (§6.4 — hoje vem via claim do JWT)
+- Custom fields com schema dinâmico (`CustomFieldDefinition`)
+- Payments completo: TenantPlan/Subscription/Invoice CRUD UI, Asaas integration, NotificationPolicy/Templates, Hangfire jobs de geração (§6.7)
+- Audit log, LGPD erase flow, alertas (§6.8)
+- 1-3 tenants beta em produção (depende de §6.3 + §6.7 estarem completos)
+- Cobertura de testes >80% (atualmente focada nas BuildingBlocks; módulos têm caminho HTTP-only)
+
+#### Próximos passos para chegar ao "MVP em produção" original
+
+1. Decidir o gateway de cobrança própria (§6.3 TBD) e implementar.
+2. Concluir Payments com fluxo manual + Asaas (§6.7 — escopo XL).
+3. Gerar e revisar migrations EF inicias para os 5 contextos (Core, Customers, Payments, Marketing, Personalization).
+4. Configurar OIDC GitHub ↔ Azure, popular secrets, fazer primeiro `az deployment sub create`.
+5. Configurar alertas, backup retention, política de logs no Azure.
+6. Onboarding piloto com 1-2 tenants beta.
 
 ---
 
