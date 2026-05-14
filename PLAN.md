@@ -355,10 +355,10 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.10 Aspire (Luga.AppHost)
 
-- [ ] (M) `Luga.AppHost` projeto Aspire
-- [ ] (M) Compose: SQL Server (container) + Server.Host + Client.Host
-- [ ] (S) Documentar no README: `dotnet run --project src/AppHost/Luga.AppHost`
-- [ ] (S) Verificar dashboard em http://localhost:18888
+- [x] (M) `Luga.AppHost` Aspire 13.3.0 project (created in §5.2)
+- [x] (M) Compose: SQL Server container with persistent `luga-sql-data` volume → `luga-core` DB → `api` project → `web` project; `WaitFor` chained so the API only starts after the DB is healthy
+- [x] (M) Connection string republished under `ConnectionStrings__Default` and `ConnectionStrings__Hangfire` so the API code reads the keys it already expects with no Aspire-specific branching
+- [x] (S) README documents `dotnet run --project src/AppHost/Luga.AppHost` and the dashboard URL <http://localhost:18888>
 
 ### 5.11 Testes
 

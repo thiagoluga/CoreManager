@@ -106,11 +106,23 @@ dotnet restore src/Luga.CoreManager.slnx
 # Build
 dotnet build src/Luga.CoreManager.slnx
 
-# Subir tudo via Aspire (API + Blazor WASM + SQL Server)
+# Subir tudo via Aspire (SQL Server container + API + Blazor WASM)
 dotnet run --project src/AppHost/Luga.AppHost
 ```
 
-Dashboard Aspire: <http://localhost:18888>
+Dashboard Aspire em <http://localhost:18888> agrega logs, métricas, traces,
+health checks e exposição dos endpoints (HTTP da API + WASM). O container do
+SQL Server tem volume persistente (`luga-sql-data`), então dados de dev
+sobrevivem entre execuções.
+
+O AppHost publica a connection string sob duas chaves:
+
+- `ConnectionStrings__Default` — usado por `CoreServerModule` (EF Core)
+- `ConnectionStrings__Hangfire` — usado por `HangfireSetup`
+
+Standalone (sem Aspire) basta `dotnet run --project src/Hosts/Luga.Server.Host`
+após popular `appsettings.Development.json` (ou User Secrets) com uma
+`ConnectionStrings:Default` apontando para SQL Server local.
 
 ### Migrations
 
