@@ -12,6 +12,7 @@
     <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Application\Luga.BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Domain\Luga.BuildingBlocks.Domain.csproj" />
     <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.IntegrationEvents\Luga.BuildingBlocks.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\..\src\BuildingBlocks\Luga.BuildingBlocks.Server\Luga.BuildingBlocks.Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>

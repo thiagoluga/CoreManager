@@ -174,17 +174,19 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.4 BuildingBlocks.Application
 
-- [ ] (S) `ITenantContext.cs`
-- [ ] (S) `ICurrentUser.cs` (UserId + Username + PreferredCulture)
-- [ ] (S) `IUnitOfWork.cs`
-- [ ] (M) `IRepository<T>.cs` base interface
-- [ ] (S) `PagedList<T>.cs` + `PagedRequest.cs`
-- [ ] (M) MediatR pipeline behaviors:
-  - [ ] `LoggingBehavior`
-  - [ ] `ValidationBehavior`
-  - [ ] `IdempotencyBehavior`
-  - [ ] `PerformanceBehavior`
-- [ ] (S) `ResultExtensions.cs` (ToActionResult)
+- [x] (S) `ITenantContext.cs`
+- [x] (S) `ICurrentUser.cs` (UserId + Username + PreferredCulture + Permissions)
+- [x] (S) `IUnitOfWork.cs`
+- [x] (S) `IIdempotencyStore.cs` (abstraction; impl em 5.5)
+- [x] (M) `IRepository<T>.cs` base interface (com `ISpecification` + `PagedList`)
+- [x] (S) `PagedList<T>.cs` + `PagedRequest.cs`
+- [x] (M) MediatR pipeline behaviors:
+  - [x] `LoggingBehavior`
+  - [x] `ValidationBehavior` (retorna `Result.Failure` quando `TResponse` é `Result`; senão lança `ValidationException`)
+  - [x] `IdempotencyBehavior` + `IIdempotentRequest` marker
+  - [x] `PerformanceBehavior` (threshold 500ms)
+- [x] (S) `ResultExtensions.cs` (`ToActionResult` → RFC 7807 ProblemDetails) — **movido para `BuildingBlocks.Server.Http`** porque Application não pode referenciar ASP.NET Core (CLAUDE.md §7.2)
+- [x] (S) Unit tests (33 novos: PagedRequest, PagedList, ValidationBehavior, ResultExtensions; 59 totais passando)
 
 ### 5.5 BuildingBlocks.Infrastructure
 
