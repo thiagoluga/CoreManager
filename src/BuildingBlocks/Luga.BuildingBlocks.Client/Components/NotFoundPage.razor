@@ -1,0 +1,16 @@
+@inject IStringLocalizer<NotFoundPage> L
+
+@*
+    Default 404. Hosts wire it into App.razor's <NotFound> slot.
+*@
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="my-16 text-center">
+    <MudPaper Elevation="0" Class="pa-8">
+        <MudIcon Icon="@Icons.Material.Filled.SentimentDissatisfied" Size="Size.Large" Color="Color.Secondary" />
+        <MudText Typo="Typo.h3" Class="mt-4">@L["title"]</MudText>
+        <MudText Typo="Typo.body1" Class="mt-2 mb-6">@L["body"]</MudText>
+        <MudButton Href="/" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Home">
+            @L["goHome"]
+        </MudButton>
+    </MudPaper>
+</MudContainer>

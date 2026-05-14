@@ -1,0 +1,19 @@
+{
+  "common.home": "Home",
+  "common.save": "Save",
+  "common.cancel": "Cancel",
+  "common.delete": "Delete",
+  "common.edit": "Edit",
+  "common.create": "New",
+  "common.search": "Search",
+  "common.loading": "Loading…",
+  "common.noResults": "No results found.",
+  "common.confirmDelete": "Are you sure you want to delete?",
+  "common.actions": "Actions",
+  "common.back": "Back",
+  "common.next": "Next",
+  "common.previous": "Previous",
+  "common.close": "Close",
+  "common.yes": "Yes",
+  "common.no": "No"
+}

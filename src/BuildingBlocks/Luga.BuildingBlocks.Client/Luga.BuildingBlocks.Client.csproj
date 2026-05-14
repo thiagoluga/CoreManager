@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <!--
-    BuildingBlocks.Client — base do front (Blazor) compartilhada por todos os módulos.
-    LugaPageBase, IModuleManifest, MainLayout, etc.
-    Regra: NÃO depende de Infrastructure.
+    BuildingBlocks.Client — shared Blazor base used by every *.Client module.
+    LugaPageBase, IModuleManifest, MainLayout, components, i18n pipeline.
+    Rule: MUST NOT depend on Infrastructure.
   -->
 
   <PropertyGroup>
@@ -20,10 +20,17 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Localization" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />
     <PackageReference Include="MudBlazor" />
     <PackageReference Include="My.Extensions.Localization.Json" />
+  </ItemGroup>
+
+  <!-- Embed JSON resource files into the assembly so MyJsonLocalization can read them
+       under WebAssembly without separate file deployment. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\**\*.json" />
   </ItemGroup>
 
 </Project>

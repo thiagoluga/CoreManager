@@ -1,0 +1,19 @@
+{
+  "common.home": "Inicio",
+  "common.save": "Guardar",
+  "common.cancel": "Cancelar",
+  "common.delete": "Eliminar",
+  "common.edit": "Editar",
+  "common.create": "Nuevo",
+  "common.search": "Buscar",
+  "common.loading": "Cargando…",
+  "common.noResults": "Sin resultados.",
+  "common.confirmDelete": "¿Seguro que desea eliminar?",
+  "common.actions": "Acciones",
+  "common.back": "Volver",
+  "common.next": "Siguiente",
+  "common.previous": "Anterior",
+  "common.close": "Cerrar",
+  "common.yes": "Sí",
+  "common.no": "No"
+}

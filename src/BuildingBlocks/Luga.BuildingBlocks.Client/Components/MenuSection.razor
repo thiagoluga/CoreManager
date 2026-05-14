@@ -1,0 +1,45 @@
+@using Luga.BuildingBlocks.Client.Auth
+@using Luga.BuildingBlocks.Client.Manifests
+@inject IStringLocalizerFactory LocalizerFactory
+@inject IPermissionService Permissions
+
+@*
+    Renders one module's menu section. Hides items the user lacks permission for.
+    Module display name and item labels resolve through IStringLocalizer using
+    keys declared in the manifest (CLAUDE.md §11.5).
+*@
+
+@if (HasAnyVisibleItem)
+{
+    <MudNavGroup Title="@DisplayName" Icon="@Manifest.IconName" Expanded="true">
+        @foreach (MenuItem item in VisibleItems)
+        {
+            <MudNavLink Href="@item.Route" Icon="@item.IconName">@GetLabel(item)</MudNavLink>
+        }
+    </MudNavGroup>
+}
+
+@code {
+    [Parameter, EditorRequired] public IModuleManifest Manifest { get; set; } = default!;
+
+    private IStringLocalizer? _localizer;
+
+    protected override void OnParametersSet()
+    {
+        _localizer = LocalizerFactory.Create(Manifest.GetType());
+    }
+
+    private string DisplayName => Resolve(Manifest.DisplayNameKey);
+
+    private string GetLabel(MenuItem item) => Resolve(item.LabelKey);
+
+    private string Resolve(string key) =>
+        _localizer is null ? key : _localizer[key];
+
+    private IEnumerable<MenuItem> VisibleItems =>
+        Manifest.MenuItems
+            .Where(i => string.IsNullOrWhiteSpace(i.RequiredPermission) || Permissions.HasPermission(i.RequiredPermission!))
+            .OrderBy(i => i.Order);
+
+    private bool HasAnyVisibleItem => VisibleItems.Any();
+}

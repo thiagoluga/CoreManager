@@ -1,0 +1,25 @@
+@using Luga.BuildingBlocks.Client.Manifests
+@using Luga.BuildingBlocks.Client.Tenancy
+@inject IEnumerable<IModuleManifest> Manifests
+@inject TenantContext Tenant
+
+@*
+    Composes the navigation menu from every registered IModuleManifest.
+    Filters out manifests gated by a subscription module the tenant doesn't have
+    (Marketing/Core stay visible — RequiredSubscriptionModule = null).
+*@
+
+<MudNavMenu Bordered="true">
+    @foreach (IModuleManifest manifest in VisibleManifests)
+    {
+        <MenuSection Manifest="manifest" />
+    }
+</MudNavMenu>
+
+@code {
+    private IEnumerable<IModuleManifest> VisibleManifests =>
+        Manifests
+            .Where(m => string.IsNullOrWhiteSpace(m.RequiredSubscriptionModule)
+                     || Tenant.HasModuleActive(m.RequiredSubscriptionModule!))
+            .OrderBy(m => m.Order);
+}

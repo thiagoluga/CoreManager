@@ -1,0 +1,31 @@
+@using Luga.BuildingBlocks.Client.Auth
+@inject IPermissionService Permissions
+
+@*
+    Renders ChildContent only when the user holds Permission. Empty/null Permission
+    treats the gate as transparent (always renders). FallbackContent is shown when
+    access is denied.
+*@
+
+@if (HasAccess)
+{
+    @ChildContent
+}
+else
+{
+    @FallbackContent
+}
+
+@code {
+    /// <summary>Permission code required to render the child content.</summary>
+    [Parameter] public string? Permission { get; set; }
+
+    /// <summary>Content rendered when the permission check passes.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>Optional content rendered when the permission check fails.</summary>
+    [Parameter] public RenderFragment? FallbackContent { get; set; }
+
+    private bool HasAccess =>
+        string.IsNullOrWhiteSpace(Permission) || Permissions.HasPermission(Permission);
+}

@@ -1,0 +1,46 @@
+@using Luga.BuildingBlocks.Client.Auth
+@using Luga.BuildingBlocks.Client.Components
+@using Luga.BuildingBlocks.Client.Tenancy
+@inherits LayoutComponentBase
+@inject CurrentUser User
+@inject TenantContext Tenant
+@inject NavigationManager Navigation
+
+@*
+    Authenticated tenant area. Marketing pages use the PublicLayout (see AuthLayout
+    for the auth flow). Admin Luga pages reuse this layout — the menu just shows
+    the admin manifests for the super-admin role.
+*@
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                       OnClick="@ToggleDrawer" />
+        <MudText Typo="Typo.h6" Class="ml-3">@AppBarTitle</MudText>
+        <MudSpacer />
+        @if (User.IsAuthenticated)
+        {
+            <MudText Typo="Typo.body2" Class="mr-3">@User.DisplayName</MudText>
+            <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"
+                           OnClick="@(() => Navigation.NavigateTo("/profile"))" />
+        }
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Mini" OpenMiniOnHover="true">
+        <MainMenu />
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="pa-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen = true;
+
+    private string AppBarTitle => string.IsNullOrWhiteSpace(Tenant.Name) ? "Luga" : Tenant.Name;
+
+    private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+}

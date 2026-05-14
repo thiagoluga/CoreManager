@@ -1,0 +1,30 @@
+@using Luga.BuildingBlocks.Client.Manifests
+
+@*
+    Thin wrapper over MudBreadcrumbs that accepts our typed BreadcrumbSegment[].
+    Localizer is supplied by the caller (typically PageBreadcrumb) so each module's
+    keys resolve against its own resource files.
+*@
+
+@if (Segments is { Count: > 0 })
+{
+    <MudBreadcrumbs Items="@MudItems" Class="@Class" />
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<BreadcrumbSegment> Segments { get; set; } = [];
+
+    /// <summary>Optional localizer for the label keys. When null, the keys render as-is (useful for dev).</summary>
+    [Parameter] public IStringLocalizer? Localizer { get; set; }
+
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private List<BreadcrumbItem> MudItems => [.. Segments.Select(s => new BreadcrumbItem(
+        text: Resolve(s.LabelKey),
+        href: s.Href,
+        disabled: string.IsNullOrEmpty(s.Href),
+        icon: s.IconName))];
+
+    private string Resolve(string key) =>
+        Localizer is null ? key : Localizer[key];
+}

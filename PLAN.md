@@ -238,28 +238,33 @@ Para evitar scope creep, EXPLICITAMENTE não entram no MVP:
 
 ### 5.6 BuildingBlocks.Client (Blazor)
 
-- [ ] (M) `IModuleManifest.cs`
-- [ ] (M) `MenuItem.cs`, `DashboardWidget.cs`, `BreadcrumbRoute.cs`, `BreadcrumbSegment.cs`
-- [ ] (M) `EmbeddableComponent.cs` (vazio, reservado V2+)
-- [ ] (M) `LugaPageBase.cs` (cascading parameters)
-- [ ] (M) Componentes compartilhados:
-  - [ ] `MainMenu.razor`
-  - [ ] `MenuSection.razor`
-  - [ ] `PageBreadcrumb.razor`
-  - [ ] `Breadcrumb.razor` (wrapper MudBreadcrumbs)
-  - [ ] `PermissionGate.razor`
-  - [ ] `NotFoundPage.razor`
-- [ ] (M) Layouts:
-  - [ ] `MainLayout.razor` (com áreas marketing/dashboard/admin)
-  - [ ] `AuthLayout.razor` (login/signup)
-- [ ] (M) Services:
-  - [ ] `IBreadcrumbResolver.cs` + impl
-  - [ ] `IPermissionService.cs` + impl
-- [ ] (M) i18n setup:
-  - [ ] Configurar `My.Extensions.Localization.Json`
-  - [ ] `Resources/SharedStrings.pt-BR.json`
-  - [ ] `IStringLocalizerFactory` configurado
-  - [ ] CultureProvider em cascata (user > tenant > browser > fallback configurado)
+- [x] (M) `IModuleManifest.cs`
+- [x] (M) `MenuItem.cs`, `DashboardWidget.cs` (+ `DashboardWidgetSize` enum), `BreadcrumbRoute.cs`, `BreadcrumbSegment.cs` (+ `BreadcrumbSegmentSource` enum)
+- [x] (M) `EmbeddableComponent.cs` (reserved for V2+)
+- [x] (M) `LugaPageBase.cs` (cascading parameters: `TenantContext`, `CurrentUser`, `IPermissionService`)
+- [x] (M) Tenancy + Auth client-side context: `TenantContext.cs` (with `ActiveModules`/`HasModuleActive`), `CurrentUser.cs`
+- [x] (M) Shared components:
+  - [x] `MainMenu.razor` (filters by `RequiredSubscriptionModule`)
+  - [x] `MenuSection.razor` (filters by `RequiredPermission`, localizes labels)
+  - [x] `PageBreadcrumb.razor` (reactive to `NavigationManager.LocationChanged`)
+  - [x] `Breadcrumb.razor` (wraps `MudBreadcrumbs`)
+  - [x] `PermissionGate.razor` (with `FallbackContent`)
+  - [x] `NotFoundPage.razor`
+- [x] (M) Layouts:
+  - [x] `MainLayout.razor` (MudLayout + MudAppBar + MudDrawer + MainMenu)
+  - [x] `AuthLayout.razor` (centered card for login/signup)
+- [x] (M) Services:
+  - [x] `IBreadcrumbResolver.cs` + `BreadcrumbResolver.cs` (route matching with `{...}` parameter wildcards + dynamic-leaf substitution)
+  - [x] `IPermissionService.cs` + `PermissionService.cs`
+- [x] (M) i18n setup:
+  - [x] `My.Extensions.Localization.Json` wired via `AddLugaLocalization`
+  - [x] `Resources/SharedStrings.pt-BR.json` + en-US + es-ES (placeholders pre-translated)
+  - [x] `Resources/NotFoundPage.{pt-BR,en-US,es-ES}.json`
+  - [x] `IStringLocalizerFactory` resolves via `My.Extensions.Localization.Json`
+  - [x] `ILugaCultureProvider` cascade (user > tenant > browser > fallback)
+  - [x] JSON files marked as `EmbeddedResource` so they reach the WASM runtime
+- [x] (S) `BuildingBlocksClientServiceCollectionExtensions.AddLugaBuildingBlocksClient` (registers MudBlazor + localization + context records + permission/breadcrumb services)
+- [x] (S) Unit tests: BreadcrumbResolver (5), PermissionService (7) → 12 new, **71 total passing**
 
 ### 5.7 Módulo Core (mínimo para autenticar)
 

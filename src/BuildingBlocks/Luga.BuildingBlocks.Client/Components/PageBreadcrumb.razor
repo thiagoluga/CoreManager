@@ -1,0 +1,62 @@
+@using Luga.BuildingBlocks.Client.Manifests
+@using Luga.BuildingBlocks.Client.Navigation
+@using Microsoft.AspNetCore.Components.Routing
+@inject IBreadcrumbResolver Resolver
+@inject NavigationManager Navigation
+@implements IDisposable
+
+@*
+    Drops on top of any page to render the breadcrumb trail registered by the
+    owning module's manifest. Pages may pass DynamicLeaf to replace the label
+    of the last dynamic segment (e.g. "Cliente João Silva").
+
+        <PageBreadcrumb DynamicLeaf="@customer?.Name" />
+*@
+
+<Breadcrumb Segments="_segments" Localizer="@Localizer" Class="@Class" />
+
+@code {
+    /// <summary>Label for the trailing dynamic segment, when present.</summary>
+    [Parameter] public string? DynamicLeaf { get; set; }
+
+    /// <summary>Localizer for the segment keys. Pages typically pass <c>@L</c> here.</summary>
+    [Parameter] public IStringLocalizer? Localizer { get; set; }
+
+    /// <summary>Optional CSS classes forwarded to <c>MudBreadcrumbs</c>.</summary>
+    [Parameter] public string Class { get; set; } = string.Empty;
+
+    private IReadOnlyList<BreadcrumbSegment> _segments = [];
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += OnLocationChanged;
+        Recompute();
+    }
+
+    protected override void OnParametersSet() => Recompute();
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        Recompute();
+        StateHasChanged();
+    }
+
+    private void Recompute()
+    {
+        string path = Navigation.ToBaseRelativePath(Navigation.Uri);
+        int queryIndex = path.IndexOf('?', StringComparison.Ordinal);
+        if (queryIndex >= 0)
+        {
+            path = path[..queryIndex];
+        }
+
+        if (!path.StartsWith('/'))
+        {
+            path = "/" + path;
+        }
+
+        _segments = Resolver.Resolve(path, DynamicLeaf);
+    }
+
+    public void Dispose() => Navigation.LocationChanged -= OnLocationChanged;
+}
