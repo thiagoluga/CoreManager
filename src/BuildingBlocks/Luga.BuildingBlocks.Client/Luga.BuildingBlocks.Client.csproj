@@ -24,11 +24,11 @@
     <PackageReference Include="Microsoft.Extensions.Localization" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" />
     <PackageReference Include="MudBlazor" />
-    <PackageReference Include="My.Extensions.Localization.Json" />
   </ItemGroup>
 
-  <!-- Embed JSON resource files into the assembly so MyJsonLocalization can read them
-       under WebAssembly without separate file deployment. -->
+  <!-- Embed JSON resource files into the assembly so LugaJsonStringLocalizer
+       can read them via Assembly.GetManifestResourceStream — works in both
+       Blazor WebAssembly and server hosts (no filesystem dependency). -->
   <ItemGroup>
     <EmbeddedResource Include="Resources\**\*.json" />
   </ItemGroup>
