@@ -8,6 +8,7 @@ using Luga.BuildingBlocks.Server.Auth;
 using Luga.BuildingBlocks.Server.BackgroundJobs;
 using Luga.BuildingBlocks.Server.Idempotency;
 using Luga.BuildingBlocks.Server.Observability;
+using Luga.BuildingBlocks.Server.RateLimiting;
 using Luga.BuildingBlocks.Server.Tenancy;
 using Luga.Modules.Core.Server;
 using Luga.Modules.Customers.Server;
@@ -27,6 +28,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseLugaSerilog();
 builder.Services.AddLugaOpenTelemetry(builder.Configuration);
 builder.Services.AddLugaHealthChecks();
+builder.Services.AddLugaRateLimiting();
 
 // ---------- Cross-cutting infrastructure ----------
 builder.Services.AddHttpContextAccessor();
@@ -101,6 +103,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -590,15 +590,15 @@ complete experience in V1.1 than half a UI and half an integration in the MVP.
 
 ### 6.8 Hardening pré-produção
 
-- [ ] (M) Rate limiting configurado por tenant + por IP
-- [ ] (M) Audit log para ações sensíveis
-- [ ] (M) Backup automático Azure SQL (point-in-time restore)
-- [ ] (M) Termos de uso e política de privacidade publicados
-- [ ] (M) LGPD: implementar exclusão de dados pessoais (Art. 18)
-- [ ] (M) Status page interno (mínimo `/health/ready` público)
-- [ ] (M) Alertas no Application Insights (error rate, latência, webhooks)
-- [ ] (S) Documentação para tenants (FAQ, tutoriais)
-- [ ] (S) Documentação técnica interna (runbooks)
+- [x] (M) Rate limiting configurado: 100 req/min por partição (tenant id quando autenticado, IP em casos anônimos) via `RateLimitingSetup.AddLugaRateLimiting` + `UseRateLimiter` (CLAUDE.md §16). Per-endpoint policies ficam para V1.1.
+- [x] (M) Status page: `/health/live` + `/health/ready` (já existem desde §5.5, sem deps externas em live).
+- [ ] (M) Audit log para ações sensíveis — **deferred to V1.1** (tabela `core.audit_entries` + write path).
+- [ ] (M) Backup automático Azure SQL (point-in-time restore) — **pending ops action**: habilitado por default no tier Serverless do Azure SQL; documentar retenção no runbook quando V1.1 abrir.
+- [ ] (M) Termos de uso e política de privacidade — **pending content**: rascunho jurídico + páginas estáticas em Marketing (`/terms`, `/privacy`).
+- [ ] (M) LGPD: fluxo de exclusão (Art. 18) — **deferred to V1.1**: o caminho técnico é `SoftDeleteInterceptor` + um `EraseCustomerCommand` que sobrescreve campos pessoais.
+- [ ] (M) Alertas Application Insights (error rate, latência, webhooks) — **pending ops action**: criar regras de alerta no portal após primeiro deploy.
+- [ ] (S) Documentação tenant (FAQ / tutoriais) — **deferred to V1.1**.
+- [ ] (S) Runbooks técnicos — **deferred to V1.1** (estrutura `docs/runbooks/` já existe desde §5.2).
 
 ### 6.9 Critério de pronto da Fase 1
 
