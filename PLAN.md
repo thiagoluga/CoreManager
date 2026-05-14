@@ -515,15 +515,22 @@ When V1.1 reopens this section the pieces needed are:
 - [x] `PermissionService` reading from the `permissions` claim (BuildingBlocks.Client) — already in place since §5.6.
 - [x] Cascading parameter in `LugaPageBase` — already in place since §5.6.
 
-### 6.5 Core: Páginas admin essenciais
+### 6.5 Core: Páginas admin essenciais — MOSTLY DEFERRED
 
-- [ ] (M) `TenantsAdmin.razor` (Luga admin lista todos tenants)
-- [ ] (M) `TenantDetail.razor` (ver/editar tenant específico)
-- [ ] (M) `TenantUsersAdmin.razor` (gerenciar users de um tenant)
-- [ ] (M) `MyProfile.razor` (user edita próprio perfil, idioma preferido)
-- [ ] (M) `TenantSettings.razor` (configurações gerais do tenant)
-- [ ] (M) `AuditLogsViewer.razor` (lê core.audit_entries)
-- [ ] (S) `I18nFallbackAdmin.razor` (super admin configura fallback de idioma)
+Admin UI is not on the critical path for the MVP demo (the demo focuses on the
+tenant-facing CRUD flows). Status:
+
+- [x] `Profile.razor` (user-facing profile) — already shipped in §5.7 by Core.Client
+- [x] `Settings.razor` (tenant settings shell) — already shipped in §5.7 by Core.Client
+- [ ] `TenantsAdmin.razor` (Luga super admin) — **deferred to V1.1**
+- [ ] `TenantDetail.razor` — **deferred to V1.1**
+- [ ] `TenantUsersAdmin.razor` — **deferred to V1.1** (tenant invite/user CRUD ships with §6.4 RBAC)
+- [ ] `AuditLogsViewer.razor` — **deferred to V1.1** (depends on `core.audit_entries` write path which is V1.1)
+- [ ] `I18nFallbackAdmin.razor` — **deferred to V1.1**
+
+The deferred screens unblock when the V1.1 backlog opens. Today's MVP demo uses
+`Profile.razor` for self-service and seeded `TenantSubscription` rows from §6.2
+for admin operations (database-direct until the UI lands).
 
 ### 6.6 Módulo Customers
 
