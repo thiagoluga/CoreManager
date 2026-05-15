@@ -51,8 +51,13 @@ jobs:
       - name: Build Blazor WASM (Release)
         run: dotnet build src/Hosts/Luga.Client.Host/Luga.Client.Host.csproj --configuration Release --no-restore
 
+      # `--no-build` is intentionally NOT passed to publish: in .NET 10 the
+      # Blazor WASM publish pipeline still needs to invoke build targets for
+      # the source-generated runtime/asset manifest, otherwise it fails with
+      # NETSDK1085 ("NoBuild was true but the Build target was invoked").
+      # We pay one extra incremental build here to keep publish honest.
       - name: Publish bundle (smoke check)
-        run: dotnet publish src/Hosts/Luga.Client.Host/Luga.Client.Host.csproj --configuration Release --no-build --output artifacts/client
+        run: dotnet publish src/Hosts/Luga.Client.Host/Luga.Client.Host.csproj --configuration Release --no-restore --output artifacts/client
 
       - name: Upload published bundle
         uses: actions/upload-artifact@v4

@@ -1,0 +1,30 @@
+# Force LF line endings for all text files on every checkout, regardless of
+# OS or local `core.autocrlf` setting. Combined with `.editorconfig`'s
+# `end_of_line = lf`, this keeps the repo, working tree, and CI runners in
+# sync — without this, Linux runners check out LF while .editorconfig
+# enforces CRLF and `dotnet format --verify-no-changes` flags every line.
+
+* text=auto eol=lf
+
+# Binary assets that must never be normalized.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.7z binary
+*.dll binary
+*.exe binary
+*.pdb binary
+*.snk binary
+*.wasm binary

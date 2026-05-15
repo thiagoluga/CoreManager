@@ -1,7 +1,4 @@
 using ArchUnitNET.Loader;
-
-using ReflectionAssembly = System.Reflection.Assembly;
-
 using Luga.BuildingBlocks.Application.Abstractions;
 using Luga.BuildingBlocks.Client.Manifests;
 using Luga.BuildingBlocks.Domain.Entities;
@@ -10,6 +7,7 @@ using Luga.BuildingBlocks.IntegrationEvents;
 using Luga.BuildingBlocks.Server.Modules;
 using Luga.Modules.Core.Contracts;
 using Luga.Modules.Core.Server;
+using ReflectionAssembly = System.Reflection.Assembly;
 
 namespace Luga.Tests.Architecture;
 
