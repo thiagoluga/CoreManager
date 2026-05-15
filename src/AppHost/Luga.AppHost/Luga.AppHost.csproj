@@ -1,8 +1,9 @@
 <Project Sdk="Aspire.AppHost.Sdk/13.3.0">
 
   <!--
-    Luga.AppHost — orquestrador Aspire para dev local (ADR 040).
-    SQL Server + Server.Host + Client.Host. Dashboard em http://localhost:18888.
+    Luga.AppHost — Aspire orchestrator for local dev (ADR 040).
+    SQL Server + Server.Host (which serves the Blazor WASM bundle on the same
+    origin per CLAUDE.md §5.8). Dashboard at http://localhost:18888.
   -->
 
   <PropertyGroup>
@@ -13,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hosts\Luga.Server.Host\Luga.Server.Host.csproj" IsAspireProjectResource="true" />
-    <ProjectReference Include="..\..\Hosts\Luga.Client.Host\Luga.Client.Host.csproj" IsAspireProjectResource="true" />
   </ItemGroup>
 
   <ItemGroup>
